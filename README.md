@@ -40,6 +40,7 @@ G--2---9---2SIB
 TODO:
 fix map type issue in trie
 fix insert issue in trie
+check and fix board[][] in main, scoreplay and scoreword
 method to score a word placed on the board
 method to search for legal words that can fit on any given space of the board
     legal words must:

@@ -4,8 +4,10 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib> // for exit()
+#include "trie.h"
 using namespace std;
 
+/*
 struct Trie {
     map<char, Trie*> children;
     bool isEOW;
@@ -116,4 +118,4 @@ int main() {
     for(vector<string>::iterator it = results.begin(); it!= results.end(); it++){
         cout << *it << endl;
     }
-}
+}*/

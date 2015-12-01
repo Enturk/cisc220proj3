@@ -1,6 +1,8 @@
 #include <iostream>
 using namespace std;
 
+// this function simply returns the score value of any letter
+
 int weight(char letter){
     switch (letter){
         case 'A':

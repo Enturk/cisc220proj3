@@ -4,9 +4,10 @@
 #include <cstdlib> // for exit()
 using namespace std;
 
+// this function simply prints the board and rack out from the saved text file
+
 int showboard(){
     // ifstream is used for reading files
-    // We'll read from a file called Sample.dat
     ifstream board("board.txt");
  
     // If we couldn't open the input file stream for reading
