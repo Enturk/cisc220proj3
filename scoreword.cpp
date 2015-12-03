@@ -11,9 +11,11 @@ using namespace std;
 
 //the word parameter must include all the letters of the word formed by the length of the placed letters
 //the xaxis parameter provides the direction of that word: true if horizontal, false if vertical
-int scoreword(char &board[][], string word, bool xaxis, int xstart, int, ystart){
+int scoreword(bool sevenLettersUsed, char &board[][], string word, bool xaxis, int xstart, int, ystart){ 
+    //FIXME change parameters and the below to use Words struct
+
     int length = word.length();
-    char tile; // the boardgame representation of that spot
+    char tile; // the boardgame representation of that spot on the baord
     int totalscore = 0; //ongoing return accumulator
     bool triple = false;
     bool doobel = false;
@@ -44,8 +46,7 @@ int scoreword(char &board[][], string word, bool xaxis, int xstart, int, ystart)
     }
     if (triple){totalscore *= 3;}
     if (doobel){totalscore *= 2;}
-    
-    // add 50 points if you use 7 letters 
+    if (sevenLettersUsed){totalscore += 50;}
     
     return totalscore;
 }

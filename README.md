@@ -38,7 +38,7 @@ IT---3---3--P4-
 G--2---9---2SIB
 
 Flowbart:
-http://imgur.com/gallery/YHBXsRO/new
+http://imgur.com/gallery/YnZXqob
 
 TODO:
 fix map type issue in trie
