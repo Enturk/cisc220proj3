@@ -42,6 +42,10 @@ int scoreword(char &board[][], string word, bool xaxis, int xstart, int, ystart)
                 totalscore += letterVal;
         }
     }
+    if (triple){totalscore *= 3;}
+    if (doobel){totalscore *= 2;}
+    
+    // add 50 points if you use 7 letters 
     
     return totalscore;
 }

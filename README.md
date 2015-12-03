@@ -37,6 +37,9 @@ WAP---2-2---I--
 IT---3---3--P4-
 G--2---9---2SIB
 
+Flowbart:
+http://imgur.com/gallery/YHBXsRO/new
+
 TODO:
 fix map type issue in trie
 fix insert issue in trie
@@ -48,7 +51,7 @@ method to search for legal words that can fit on any given space of the board
         use letters on the rack
         fit on the board
         make words in the dictionary in all directions
-    keep highest scoring one
+    keep highest scoring twenty
 
 debug & test & repeat
 Remove space from showboard
