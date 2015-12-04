@@ -55,6 +55,8 @@ Initialize dictionary (trie)
     sort into pre and post-fixes
 
 Find anchor positions (anchorfinder)
+    
+    move isBlank to its own file
 
 Create list of legal words (Words?). Legal words must:
 

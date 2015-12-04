@@ -10,7 +10,7 @@ bool anchorfinder(char& board){ //FIXME this parameter... pointers, argh!
             anchor[i][j] = false; // set board spaces to unavailable by default
             
             if (board[i][j] == '9' || // check that the tile in question is blank
-                board[i][j] == '4' ||
+                board[i][j] == '4' || // TODO must move these to a method called isBlank returning a bool
                 board[i][j] == '3' ||
                 board[i][j] == '2' ||
                 board[i][j] == '-'){
