@@ -40,18 +40,19 @@ G--2---9---2SIB
 Flowbart:
 http://imgur.com/gallery/YnZXqob
 
-TODO:
-fix map type issue in trie
-fix insert issue in trie
+Roadmap and TODO:
 check and fix board[][] in main, scoreplay and scoreword
-method to score a word placed on the board
-method to search for legal words that can fit on any given space of the board
-    legal words must:
-        use letters on the board or the middle square
-        use letters on the rack
-        fit on the board
-        make words in the dictionary in all directions
-    keep highest scoring twenty
+Import or create board (readboard)
+Initialize dictionary (trie)
+    fix map type issue in trie
+    fix insert issue in trie
+Find anchor positions (anchorfinder)
+Create list of legal words (Words?). Legal words must:
+    use letters on the board or the middle square
+    use letters on the rack
+    fit on the board
+    make words in the dictionary in all directions
+Trim list to top 20 scorers (scoreplay, scoreword, weight)
 
 debug & test & repeat
 Remove space from showboard

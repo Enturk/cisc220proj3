@@ -1,5 +1,5 @@
-all: main.o trie.o showboard.o readboard.o scoreword.o scoreplay.o words.o weight.o -o scrabble
-	g++ main.o trie.o showboard.o readboard.o scoreboard.o scoreword.o scoreplay.o words.o weight.o -o scrabble
+all: main.o trie.o showboard.o readboard.o scoreword.o scoreplay.o words.o weight.o anchorfinder.o -o scrabble
+	g++ main.o trie.o showboard.o readboard.o scoreboard.o scoreword.o scoreplay.o words.o weight.o anchorfinder.o -o scrabble
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -27,6 +27,9 @@ words.o: words.cpp
 	
 weight.o: weight.cpp
 	g++ -c weight.cpp weight.h
+
+anchorfinder.o: anchorfinder.cpp
+	g++ -c anchorfinder.cpp anchorfinder.h
 	
 # this target will remove the extra make files
 clean:
