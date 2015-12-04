@@ -10,5 +10,7 @@ using namespace std;
 // adjacent to an existing letter
 bool anchorfinder(int* board[][]){
     bool anchor[14][14]; //or one array of 225 elements if Rile is right
-    for (int i = 0; )
+    for (int i = 0; i < 15; i++){
+        
+    }
 }
