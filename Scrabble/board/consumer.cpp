@@ -1,7 +1,9 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include weights.cpp
+#include <vector>
+//#include weights.cpp          not the right way to include these... not sure what path it should be
+//#include ./lib/structs.cpp
 using namespace std;
 
 /* Input data consumer functions
@@ -39,16 +41,16 @@ Board boardGen() {
     }
 
     inFile >> x; //skip the first line(the rack)
-    int row=0;
+    int countX = 0;
     while(inFile >> x) {
-       countY = 0;
+       int countY = 0;
         // This loops through each line of inFile and stores it
         // in variable x for each iteration.
         //
         //   note: the iterator line below looks scary. think of it as
         //   "for each char it in x"
         for(string::iterator it = x.begin(); it!=x.end();++it){
-          if (*it == "-"){
+          if (*it == '-'){
             board.tiles.push_back(new Tile('',0,0, {countX,countY}));
           }
           if (isalpha(*it)){
@@ -74,14 +76,22 @@ vector<Tile> rackGen() {
     inFile.open("./board/board.txt");
     if(!inFile){
         cout << "File does not exist?" << endl;
-        return NULL;
+        return 0;
     }
     inFile >> x; //Store the rack line in variable x;
     vector<Tile> rwords(7); // array the tiles that the rack letters make
     // for each char it in x
     for(string::iterator it = x.begin(); it!=x.end();++it){
-        rwords[i] = new Tile(*it, weight(*it), 0, {-1}); // initializes tile with no bonus and default coord of -1
+        rwords.at(*it) = new Tile(*it, weight(*it), 0, {-1}); // initializes tile with no bonus and default coord of -1
     }
     inFile.close();
     return tiles;
+}
+
+int main(){
+  vector<Tile> t = rackGen();
+  for (int i; i < t.size(); i++){
+    cout << t.at(i).letter;
+  }
+  return 0;
 }

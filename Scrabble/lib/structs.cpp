@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <bitset>
-#include weights.cpp
+//#include weights.cpp
 using namespace std;
 struct Tile {
     //This tile object is flexible enough to represent
