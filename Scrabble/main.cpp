@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "./lib/structs.cpp"
 #include "./board/consumer.cpp"
 #include "./moves/movesGen.cpp"
@@ -10,7 +11,7 @@
 
 int main() {
     Board board = boardGen();
-    Tile* rack = rackGen();
-    Board* moves = movesGen(board, rack);
-    cout << moves << endl;
+    vector<Tile> rack = rackGen();
+    vector<Board> moves = movesGen(board, rack);
+    //cout << moves[0] << endl;
 }
