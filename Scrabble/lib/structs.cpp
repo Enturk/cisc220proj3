@@ -1,6 +1,6 @@
-#include<iostream>
-#include<sstream>
-#include<bitset>
+#include <iostream>
+#include <sstream>
+#include <bitset>
 using namespace std;
 struct Tile {
     //This tile object is flexible enough to represent
@@ -22,7 +22,7 @@ struct Board {
     int score; //boards are only scored if we have put a move onto it
     /* Functions to be added:
      * Tile& getTile(int x, int y):
-     *      this should do a mathematical operation to 
+     *      this should do a mathematical operation to
      *      take an x and y and return the corresponding
      *      tile from the tiles array.
      *      Make it return the reference, so tiles can be
@@ -34,7 +34,7 @@ struct Board {
      *      (see board/board.txt for an example)
      */
     Tile getTile(int col, int row){
-        /* ARGS: 
+        /* ARGS:
          *      col, row: integers that represent the x,y coordinate on the board
          * RETURNS:
          *      Tile: The tile at the specified col, row.
