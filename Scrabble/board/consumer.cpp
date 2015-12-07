@@ -49,13 +49,13 @@ Board boardGen() {
         //   "for each char it in x"
         for(string::iterator it = x.begin(); it!=x.end();++it){
           if (*it == "-"){
-            board.tiles.push_back(new Tile('',0,0, (countX,countY)));
+            board.tiles.push_back(new Tile('',0,0, {countX,countY}));
           }
           if (isalpha(*it)){
-            board.tiles.push_back(new Tile(*it, 0, weight(*it), (countX,countY)));
+            board.tiles.push_back(new Tile(*it, 0, weight(*it), {countX,countY}));
           }
           if(isdigit(*it)){
-            board.tiles.push_back(new Tile('', *it, 0, (countX,countY)));
+            board.tiles.push_back(new Tile('', *it, 0, {countX,countY}));
           }
         countY++;
         }
@@ -65,7 +65,7 @@ Board boardGen() {
     return board;
 }
 
-Tile* rackGen() {
+vector<Tile> rackGen() {
     ifstream inFile;
     string x;
 
@@ -77,14 +77,10 @@ Tile* rackGen() {
         return NULL;
     }
     inFile >> x; //Store the rack line in variable x;
-
+    vector<Tile> rwords(7); // array the tiles that the rack letters make
     // for each char it in x
     for(string::iterator it = x.begin(); it!=x.end();++it){
-        Tile tile;
-        tile.letter = *it;
-        tile.score = weight(*it);
-        tile.coords = {-1}; // it's not on the board, coords shows that by {-1};
-        //probably should set tile.bonus = 0;
+        rwords[i] = new Tile(*it, weight(*it), 0, {-1}); // initializes tile with no bonus and default coord of -1
     }
     inFile.close();
     return tiles;

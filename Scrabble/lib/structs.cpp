@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <bitset>
+#include weights.cpp
 using namespace std;
 struct Tile {
     //This tile object is flexible enough to represent
@@ -11,9 +12,18 @@ struct Tile {
     int score; // letter's score (0 if above is zero)
     int bonus; // bonus on that tile (only if representing an empty spot on the board
     vector<int> coords; // position of tile on board
+    bool anchor;
     bitset<26> xchecks;
     // coords is {0}(one index array of -1) if tile
     // is not on the board.
+    Tile(char l, int weight, int b, vector<int> c){
+      letter= l;
+      score = weight;
+      bonus = b;
+      coords = c;
+      anchor = false;
+      xchecks = xchecks.set();
+    }
 };
 
 struct Board {
@@ -34,23 +44,29 @@ struct Board {
      *      (see board/board.txt for an example)
      */
     Tile getTile(int col, int row){
-        /* ARGS:
-         *      col, row: integers that represent the x,y coordinate on the board
-         * RETURNS:
-         *      Tile: The tile at the specified col, row.
-         */
-        return tiles[0/*some flattening mathematical function.
-                       that is; it should always return a single unique number when I give it a col and a row*/];
+        //the index of a tile with coordinates of (x,y) in the 2D array is (15*x)+y.
+        return &board.tiles[15*col + row];
     }
-    Tile* getRow(int row){
+
+    vector<Tile> getRow(int row){
         /* ARGS: row; integer to represent the row
-         * RETURNS: an array of tiles in that row.
+         * RETURNS: an vector of tiles in that row.
          */
+         vector<Tile> r;
+         for (int i = 0; i < 15; i++){
+           r.push_back(board.tiles.at(15*row + i); //adds each tile in that row to the vector
+         }
+         return r;
     }
-    Tile* getCol(int col){
+    vector<Tile> getCol(int col){
         /* ARGS: col; integer to represent a col.
          * RETURNS: an array of tiles in that col
          */
+         vector<Tile> c;
+         for (int i= 0; i < 15; i++){
+           c.push_back(board.tiles.at(15*i + col))
+         }
+         returns c;
     }
 
     ostream& operator<<(const Board& board){
