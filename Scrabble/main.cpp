@@ -11,8 +11,6 @@
 int main() {
     Board board = boardGen();
     Tile* rack = rackGen();
-    Board* moves = movesGen();
-    // Which do we want to do?
-    cout << printBoard(moves[0]) << endl;
-    cout << moves[0] << endl;
+    Board* moves = movesGen(board, rack);
+    cout << moves << endl;
 }

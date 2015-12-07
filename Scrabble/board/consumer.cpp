@@ -37,16 +37,37 @@ Board boardGen() {
     }
 
     inFile >> x; //skip the first line(the rack)
+    int row=0;
     while(inFile >> x) {
+        int col=0;
         // This loops through each line of inFile and stores it
         // in variable x for each iteration.
         //
         //   note: the iterator line below looks scary. think of it as 
         //   "for each char it in x"
         for(string::iterator it = x.begin(); it!=x.end();++it){
-            //dothingsto(*it);
-            // or cout << *it << endl;
+            /*
+             * TODO: create a tile for each character. This is the general scaffolding, it needs
+             *  to be completed though.
+             * keep track of column and row.
+             * put that tile on the board. (board.getTile(col, row) = new Tile(it);)
+             */
+            Tile tile;
+            if(0/* it is a letter */){//figure out how to test if a char is a letter.
+                tile.letter = *it;
+                tile.score = weight(*it); // nazim made a switching function for getting the int weights.
+                                          // That will have to be included somewhere in here. Put it in ./lib/
+                // we should probably also set bonus=0
+            } else tile.letter = 0;
+            if(0 /*it is a number */){//figure out how to test if a char is a number
+                tile.bonus = (int)*it;//bonus is the int equivalent of the char. Not sure how to cast
+                                      // a char to an int 
+            }
+            tile.coords = {col, row};//I don't know how to create an array on the fly.
+            board.getTile(col, row) = tile;
+            col++;
         }
+        row++;
     }
     inFile.close();
     return board;
@@ -64,14 +85,21 @@ Tile* rackGen() {
         return NULL;
     }
     inFile >> x; //Store the rack line in variable x;
-
+    
+    int i=0;
     // for each char it in x 
     for(string::iterator it = x.begin(); it!=x.end();++it){
-        //dothingsto(*it);
-        // or cout << *it << endl;
-        // 
+        // TODO: Make this work. Find how to do if it==(any ascii letter, upper or lower) 
         // create new tile, set its letter to it, set its score
+        Tile tile;
+        if(0/* it is a letter */){
+            tile.letter = *it;
+            tile.score = weight(*it);
+            tile.coords = {-1}; // it's not on the board, coords shows that by {-1};
+            //probably should set tile.bonus = 0;
+        } else tile.letter = 0;
+        i++;
     }
     inFile.close();
-    return NULL;
+    return tiles;
 }
