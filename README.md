@@ -42,34 +42,34 @@ http://imgur.com/gallery/YnZXqob
 
 Roadmap and TODO:
 
-check and fix board[][] in main, scoreplay and scoreword
+1. check and fix board[][] in main, scoreplay and scoreword
 
-Import or create board (readboard)
+2. Import or create board (readboard)
 
-Initialize dictionary (trie)
+3. Initialize dictionary (trie)
+   
+    a. fix map type issue in trie
 
-    fix map type issue in trie
+    b. fix insert issue in trie
 
-    fix insert issue in trie
+    c. sort into pre and post-fixes
 
-    sort into pre and post-fixes
-
-Find anchor positions (anchorfinder)
+4. Find anchor positions (anchorfinder)
     
-    move isBlank to its own file
+    a. move isBlank to its own file
 
-Create list of legal words (Words?). Legal words must:
+5. Create list of legal words (Words?). Legal words must:
 
-    use letters on the board or the middle square
+    a. use letters on the board or the middle square
 
-    use letters on the rack
+    b. use letters on the rack
 
-    fit on the board
+    c. fit on the board
 
-    make words in the dictionary in all directions
+    d. make words in the dictionary in all directions
 
-Trim list to top 20 scorers (scoreplay, scoreword, weight)
+6. Trim list to top 20 scorers (scoreplay, scoreword, weight)
 
-debug & test & repeat
+7. debug & test & repeat
 
-Remove space from showboard
+8. Remove space from showboard
