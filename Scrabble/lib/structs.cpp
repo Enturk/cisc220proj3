@@ -14,4 +14,17 @@ struct Tile {
 struct Board {
     // the board has a one dimensional array of Tiles
     Tile* tiles;
+    /* Functions to be added:
+     * Tile& getTile(int x, int y):
+     *      this should do a mathematical operation to 
+     *      take an x and y and return the corresponding
+     *      tile from the tiles array.
+     *      Make it return the reference, so tiles can be
+     *      set by board.getTile(0,0) = myTile;
+     *
+     * operator<<() Overload;
+     *      Overload the << operator to print a board
+     *      exactly in the format of the input board
+     *      (see board/board.txt for an example)
+     */
 };
