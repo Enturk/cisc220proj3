@@ -3,7 +3,7 @@
 #include <fstream>
 #include <cstdlib> // for exit()
 using namespace std;
-
+//updated readboard is boardGen
 // this function imports the board into a 15 by 15 array
 char* readboard(){ // is this the right pointering stuff? If not, FIXME, and don't forget to fix the header
     char game[14][14];
