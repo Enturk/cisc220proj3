@@ -1,3 +1,5 @@
+# needs updating dramatically - Nazim volunteers
+
 all: main.o trie.o showboard.o readboard.o scoreword.o scoreplay.o words.o weight.o anchorfinder.o -o scrabble
 	g++ main.o trie.o showboard.o readboard.o scoreboard.o scoreword.o scoreplay.o words.o weight.o anchorfinder.o -o scrabble
 

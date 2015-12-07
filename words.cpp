@@ -5,6 +5,8 @@
 #include <cstdlib> // for exit()
 using namespace std;
 
+// incomplete
+
 // this struct is to describe words that COULD be placed on the board
 // not sure this is the best way to deal with possible words, but it feels like it
 struct Words {

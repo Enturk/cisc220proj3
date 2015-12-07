@@ -7,6 +7,8 @@
 #include "scoreword.h"
 using namespace std;
 
+// incomplete
+
 // this function runs the scoreword function for all the words created by a play
 
 //the word parameter must include all the letters of the word formed by the length of the placed letters

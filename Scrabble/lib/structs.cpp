@@ -9,16 +9,16 @@ struct Tile {
     //  2. A wooden tile piece placed on the board
     //  3. A blank spot on the board
     char letter; //tile's letter (0 if no letter)
-    int score; // letter's score (0 if above is zero)
+    int weight; // letter's score (0 if above is zero)
     int bonus; // bonus on that tile (only if representing an empty spot on the board
     vector<int> coords; // position of tile on board
     bool anchor;
     bitset<26> xchecks;
     // coords is {0}(one index array of -1) if tile
     // is not on the board.
-    Tile(char l, int weight, int b, vector<int> c){
+    Tile(char l, int W, int b, vector<int> c){
       letter= l;
-      score = weight;
+      weight = W;
       bonus = b;
       coords = c;
       anchor = false;

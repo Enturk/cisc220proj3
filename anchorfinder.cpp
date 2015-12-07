@@ -1,6 +1,8 @@
 #include "readboard.h" // for testing
 using namespace std;
 
+
+// Untested, but should work
 // function that returns a 2D array of booleans representing the vacant spots
 // adjacent to an existing letter
 bool anchorfinder(char& board){ //FIXME this parameter... pointers, argh!
