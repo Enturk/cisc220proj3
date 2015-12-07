@@ -70,7 +70,12 @@ struct Board {
     }
 
     ostream& operator<<(const Board& board){
-        /* if I do cout << board;, this should return an output stream object that has the board in it
+        /* ARGS: const Board& board; an input board
+         * RETURNS: ostream; an output stream object for <<'ing into cout.
+         *
+         * if I do cout << board;, this should return an output stream object that has the board in it
+         *
+         * This is a way of printing the board
          */
         ostringstream os;//this throws warnings. I probably did something wrong;
         for(int i=0;i<15;i++){
