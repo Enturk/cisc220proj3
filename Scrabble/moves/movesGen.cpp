@@ -111,6 +111,20 @@ void LeftPart(string partialWord, Node n, int limit){
         }
     }
 }
+
+multimap<string, Tile> legalMoves;
+void LegalMove(string partialWord, Tile square){
+    /*
+     * ARGS: string partialWord; the word that is a legal move.
+     *       Tile square; the square on which the last letter should be placed.
+     * RETURNS:
+     *      none, but it should somehow keep track of all the possible legal moves passed through it.
+     *      I've defined multimap<string, tile> legalMoves outside the scope of this function.
+     *      It is now global scope and should be accessible from movesGen.
+     *      LegalMove should add a record to that map of strings->tiles {string:tile}
+     */
+}
+
 void ExtendRight(string partialWord, Node n, Tile square){
     if(0/*square is vacant*/){
         if(/*n is a terminal node*/0){
@@ -139,14 +153,6 @@ void ExtendRight(string partialWord, Node n, Tile square){
     }
 }
 
-void LegalMove(string partialWord, Tile square){
-    /*
-     * ARGS: string partialWord; the word that is a legal move.
-     *       Tile square; the square on which the last letter should be placed.
-     * RETURNS:
-     *      none, but it should somehow keep track of all the possible legal moves passed through it.
-     */
-}
 
 vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
     // This returns a vector of boards because we don't know how many movess a specific anchor might yeild.
@@ -155,12 +161,16 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
      *       rack; the rack of tiles we are able to place onto the board.
      * RETURNS:
      *      a vector of Boards, length depends on how many moves are computed from the anchor
+     *
+     *      it should generate the vector of Boards based off of the records of LegalMove.
      */
     vetor<Board> moves;
     string partialWord = findPartial(anchor, board, rack);
     Node n = traverseTrie(partialword);
     int limit = findLimit(anchor, board);
     LeftPart(partialWord, n, limit);
+    //after this point, LegalMove should have fully populated the legalMoves map above.
+    return /* convert the legalMoves map into a vector of boards*/NULL;
 }
 
 vector<Board> movesGen(Board board, vector<Tile> rack){
