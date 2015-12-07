@@ -87,11 +87,3 @@ vector<Tile> rackGen() {
     inFile.close();
     return tiles;
 }
-
-int main(){
-  vector<Tile> t = rackGen();
-  for (int i; i < t.size(); i++){
-    cout << t.at(i).letter;
-  }
-  return 0;
-}
