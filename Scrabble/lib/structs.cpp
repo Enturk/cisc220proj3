@@ -10,7 +10,7 @@ struct Tile {
     char letter; //tile's letter (0 if no letter)
     int score; // letter's score (0 if above is zero)
     int bonus; // bonus on that tile (only if representing an empty spot on the board
-    int* coords; // position of tile on board
+    vector<int> coords; // position of tile on board
     bitset<26> xchecks;
     // coords is {0}(one index array of -1) if tile
     // is not on the board.
@@ -18,7 +18,8 @@ struct Tile {
 
 struct Board {
     // the board has a one dimensional array of Tiles
-    Tile* tiles;
+    vector<Tile> tiles;
+    int score; //boards are only scored if we have put a move onto it
     /* Functions to be added:
      * Tile& getTile(int x, int y):
      *      this should do a mathematical operation to 
