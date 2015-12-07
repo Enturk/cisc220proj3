@@ -170,6 +170,8 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
     int limit = findLimit(anchor, board);
     LeftPart(partialWord, n, limit);
     //after this point, LegalMove should have fully populated the legalMoves map above.
+    //when converting from the map into a board, also keep track of the score and add it to
+    //board.score
     return /* convert the legalMoves map into a vector of boards*/NULL;
 }
 
