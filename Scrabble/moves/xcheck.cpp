@@ -7,11 +7,16 @@ void crossCheck(Tile& tile){
      * ARGS: Tile&, it has direct access to the tile it is checking.
      * RETURNS: none, it should edit the board tiles in place.
      */
+    
+    string partialword = ""; // word accumulator
      
     // STEP ONE check if tile is empty, if not skip tile
-    if 
+    // unnecessary if called by anchor
+
+    if (tile.coords+15 == 0){ // check which adjacent tile has a letter
+        
+    }
     
-    // STEP TWO check if any adjacent tile has a letter, if not, skip tile
     // STEP THREE check if tile past that in same direction has letter, if so, add it to the potential word
     //      sidenote; look into using the findPartial() function
     // STEP four: repeat step three for next tile in that direction.
