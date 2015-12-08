@@ -11,83 +11,14 @@
  * be extracted to their own functions
  */
 #include <vector>
+#include "xcheck.cpp"
+#include "utils.cpp"
 using namespace std;
-void crossCheck(Board& board){
-    /* This has to go through the board(rows and cols), look at the corresponding adjacent
-     * tiles above and below(row+-1,col+-1) and see if the result for each letter is a word.
-     * For the letters that do produce real words, check it off(set bit to 1) in tile.xchecks[index]
-     * for each letter that does not produce a word in either the row or col, set the corresponding bit to 0
-     *
-     * ARGS: Board&, it has direct access to board.
-     * RETURNS: none, it should edit the board tiles in place.
-     */
 
-    /* something like this, I don't know if this is the best way
-     *
-     * There is a challenge in finding contiguous chunks of letters.
-     * Imagine we have a board like this:
-     * 
-     *   O
-     * BOXES
-     * U E
-     * T*N
-     * T
-     *
-     * TRANSPOSED:
-     * 
-     *  BUTT
-     *  O *
-     * OXEN
-     *  E
-     *  S
-     * Placing an E at the star is legal, but if the cross check does not see that T+E+N creates a word,
-     * it will mark E as invalid at the star position.
-     * there should be some recursive element that accounts for contiguous chunks.
-     *
-     for(each row in board){
-        for(each col in row){
-            ostringstream str;
-            board.getTile(row, col);
-            str << board.getTile(row,col);
-            str << board.getTile(row+1,col);
-        }
-    }*/
-}
 
-vector<Tile> getAnchors(Board board){
-    /* Args: board; a Board with tiles on it. Tiles should have a completed xchecks vector associated w/ them.
-     * RETURNS: vector<Tile> a list of all of the tiles that are anchors.
-     * 
-     * it might be best to add an "anchor" boolean for the tiles on the board.
-     *
-     * anchors are defined as the leftmost empty tiles adjacent to already placed tiles with non-trivial xchecks.
-     * That is; they are the blank spots to the left of words already on the board(tile.letter==0)
-     * and they have non-trivial crosschecks(there is at least one '1' in tile.xchecks
-     */
-    vector<Tile> anchors;
-    return anchors;
-}
 
-string findPartial(Tile anchor, Board board){
-    /* args: Tile anchor; the anchor from which we are computing
-     *       Board board; the actual board object
-     * RETURNS: the string of the prefix to the left of anchor, only from tiles that are already on the board
-     */
-}
 
-Node traverseTrie(string partialWord){
-    /* args: string partialWord. the string we want to travel up to
-     * returns: a Node object, a piece of the trie with labeled edges and an acceptState boolean
-     */
-}
-int findLimit(Tile anchor, Board board){
-    /* args: Tile anchor, the anchor we want to find the left limit of.
-     *       Board board, the board to analyze
-     * returns: the number of non-anchor tiles to the left of anchor.
-     *
-     * NOTE: I think we might need an anchor bool for Tiles on the board.
-     */
-}
+
 void LeftPart(string partialWord, Node n, int limit){
     /* ARGS:
      *  partial word is the string to the left of the anchor
