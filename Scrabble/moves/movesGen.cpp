@@ -35,9 +35,9 @@ void LegalMove(string partialWord, Tile square){
      legalMoves.insert(pair<string,Tile>(partialWord, square));
 }
 
-void ExtendRight(string partialWord, Node n, Tile square){
+void ExtendRight(string partialWord, Trie n, Tile square){
     if(square.letter == 0){
-        if(){
+        if(n.isEOW){
             LegalMove(partialWord,square)//I'm pretty sure the square will be the position of the last letter
         }
         for(/*each edge E out of n*/){
