@@ -86,9 +86,10 @@ struct Trie {
         isEOW = false;
     }
 };
-
-int main() {
-    Trie root;
+Trie root;
+bool init=false;
+Trie getTrie() {
+    if(init)return root;
     string temp = "";
     vector<string> results;
     string line; 
@@ -99,8 +100,9 @@ int main() {
         }
         dict.close();
     }
-
-    map<char, int> rack;
+    init=true;
+    return root;
+    /*map<char, int> rack;
     rack['n'] = 1;
     rack['e'] = 2;
     rack['h'] = 1;
@@ -112,15 +114,15 @@ int main() {
     for(vector<string>::iterator it = results.begin(); it!= results.end(); it++){
             cout << *it << endl;
     }
-    return 0;
-} 
-//I DONT KNOW WHAT I"M DOING, but we need something like this here -rlyshw
-Node traverseTrie(string partialWord){
-    /* This needs to be part of the trie itself.
+    return 0;*/
+}
+//I DONT KNOW WHAT I"M DOING, but we need something like this in the trie -rlyshw
+/*Node traverseTrie(string partialWord){
+     This needs to be part of the trie itself.
         args: string partialWord. the string we want to travel up to
      * returns: a Node object, a piece of the trie with labeled edges and an acceptState boolean
-     */
-}
+     
+}*/
 
 //we also need a way of getting all possible letters from a given node
 // we also need a way of getting the next node along the path of a letter.

@@ -13,15 +13,18 @@ struct Tile {
     int bonus; // bonus on that tile (only if representing an empty spot on the board
     vector<int> coords; // position of tile on board
     bool anchor;
+    int orient;
     bitset<26> xchecks;
     // coords is {0}(one index array of -1) if tile
     // is not on the board.
+    Tile(){};
     Tile(char l, int W, int b, vector<int> c){
       letter= l;
       weight = W;
       bonus = b;
       coords = c;
       anchor = false;
+      orient = 0;
       xchecks = xchecks.set();
     }
 };
@@ -30,22 +33,10 @@ struct Board {
     // the board has a one dimensional array of Tiles
     vector<Tile> tiles;
     int score; //boards are only scored if we have put a move onto it
-    /* Functions to be added:
-     * Tile& getTile(int x, int y):
-     *      this should do a mathematical operation to
-     *      take an x and y and return the corresponding
-     *      tile from the tiles array.
-     *      Make it return the reference, so tiles can be
-     *      set by board.getTile(0,0) = myTile;
-     *
-     * operator<<() Overload;
-     *      Overload the << operator to print a board
-     *      exactly in the format of the input board
-     *      (see board/board.txt for an example)
-     */
+   
     Tile getTile(int col, int row){
         //the index of a tile with coordinates of (x,y) in the 2D array is (15*x)+y.
-        return &board.tiles[15*col + row];
+        return tiles[15*col + row];
     }
 
     vector<Tile> getRow(int row){
@@ -54,23 +45,24 @@ struct Board {
          */
          vector<Tile> r;
          for (int i = 0; i < 15; i++){
-           r.push_back(board.tiles.at(15*row + i); //adds each tile in that row to the vector
+           r.push_back(tiles.at(15*row + i)); //adds each tile in that row to the vector
          }
          return r;
     }
     vector<Tile> getCol(int col){
         /* ARGS: col; integer to represent a col.
-         * RETURNS: an array of tiles in that col
+         * RETURNS: a vector of tiles in that col
          */
          vector<Tile> c;
          for (int i= 0; i < 15; i++){
-           c.push_back(board.tiles.at(15*i + col))
+           c.push_back(tiles.at(15*i + col));
          }
-         returns c;
+         return c;
     }
 
     ostream& operator<<(const Board& board){
-        /* ARGS: const Board& board; an input board
+        /* This may or may not be working
+         * ARGS: const Board& board; an input board
          * RETURNS: ostream; an output stream object for <<'ing into cout.
          *
          * if I do cout << board;, this should return an output stream object that has the board in it

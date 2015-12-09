@@ -1,31 +1,72 @@
-void crossCheck(Tile& tile){
+#include <iostream>
+#include <vector>
+#include <bitset>
+#include <string>
+#include "utils.cpp"
+#include "../lib/structs.cpp"
+#include "../lib/trie.cpp"
+using namespace std;
+
+// Nazim
+// Incomplete
+
+void crossCheck(Tile& tile, Board& board){
     /* This has to go through the board(rows and cols), look at the corresponding adjacent
      * tiles above and below(row+-1,col+-1) and see if the result for each letter is a word.
      * For the letters that do produce real words, check it off(set bit to 1) in tile.xchecks[index]
      * for each letter that does not produce a word in either the row or col, set the corresponding bit to 0
      *
      * ARGS: Tile&, it has direct access to the tile it is checking.
+            Board&, to modify it in place
      * RETURNS: none, it should edit the board tiles in place.
      */
     
-    string partialword = ""; // word accumulator
-     
     // STEP ONE check if tile is empty, if not skip tile
-    // unnecessary if called by anchor
-
-    if (tile.coords+15 == 0){ // check which adjacent tile has a letter
-        
+    // unnecessary because called by anchor
+    /* int length = 1;
+    char nextTile;
+    int row = tile.coords.at(1)-length;
+    while (row > 0){ // go up as long as can go up
+        nextTile = board.getTile(tile.coords.at(0),tile.coords.at(1)-length).letter;
+        if (nextTile != '0'){ // STEP TWO: check which adjacent tile has a letter
+            partialword += nextTile;
+        } else {break;} // stop moving up if we get to an empty tile
+        length++;
+        row--;
     }
+    */
+    // need to reverse partialword here if I then look it up in the for loop below.
+    /*
     
-    // STEP THREE check if tile past that in same direction has letter, if so, add it to the potential word
-    //      sidenote; look into using the findPartial() function
-    // STEP four: repeat step three for next tile in that direction.
-    // StEP FIVE: when an empty tile is encountered, submit the potential word to findPartial
-    // STEP SIX: put results (legal letters) into that tile's xchecks bitset.
-
-
-    /* something like this, I don't know if this is the best way
+    -----
+    *CAT- This one is the only horizontal anchor, Tile.orient==1
+    -----
     
+    ---
+    *C-
+    *A- These are going to be considered vertical, anchor.orient==2
+    0T-
+    ---
+    
+    I just set up the anchors. Oh, it doesn't matter. 
+    0 is marked as a specific anchor above.
+    findPartial(0,board) will give you "T"
+    
+    Easier to debug one implementation, not two. That being said, I'll clean up other code and let you finish here.
+    but pls don't rewrite a partial word finding function
+    */
+    string partialword = findPartial(tile, board);
+    Trie trie = getTrie();
+    // string bitContainer = "00000000000000000000000000"; // container 
+    string word;
+    string alphabet =     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (int i = 0; i > 26; i++){
+        word = partialword + alphabet[i];
+        tile.xchecks[i] = trie.hasWord(word); // I'm a genius. That's Nazim. He really is. 
+    }
+
+    
+    /*
     so moves can only be done in the relative horizontal
     -***-  -***-
     -CAT-  -COG- 
@@ -68,7 +109,8 @@ void crossCheck(Tile& tile){
     -WORD---
     -WORD---
     -****---
-    well I just see this as a recursive problem. Or wait, I think check partial is going to do something just like this.
+    well I just see this as a recursive problem. Or wait, I think check partial is going to 
+    do something just like this.
     You might be able to call check partial on the col/row previous to the xcheck spot.
     well no, i mean it's going to do the same thing where it digests and returns 
     contiguous groups of tiles that form parts of words.
@@ -125,4 +167,4 @@ void crossCheck(Tile& tile){
     }*/
 
     
-}
+};

@@ -1,9 +1,7 @@
 vector<Tile> getAnchors(Board board){
+    //Sam-complete, needs testing
     /* Args: board; a Board with tiles on it. Tiles should have a completed xchecks vector associated w/ them.
      * RETURNS: vector<Tile> a list of all of the tiles that are anchors.
-     * 
-     * it might be best to add an "anchor" boolean for the tiles on the board.
-     *
      * anchors are defined as the leftmost empty tiles adjacent to already placed tiles with non-trivial xchecks.
      * That is; they are the blank spots to the left of words already on the board(tile.letter==0)
      * and they have non-trivial crosschecks(there is at least one '1' in tile.xchecks
@@ -20,19 +18,25 @@ vector<Tile> getAnchors(Board board){
      */
     vector<Tile> anchors;
     vector<Tile> finalAnchs;
-    for (int i = 0; i < 15; i++){
-        for (int j = 0; j < 14; j++){ // has to go only to 14 because we do j+1 
+    for (int i = 0; i< 15; i++){ //rows
+        for (int j = 0; j < 14; j++){ // has to go only to 14 because we do j+1 //cols
             Tile t = board.getTile(i,j);
-            Tile nextTo = board.getTile(i, j+1);
-            if (t.letter == '' && isalpha(nextTo.letter)){ //checks if the tile is empty and the tile next to it has a letter
+            Tile nextTo = board.getTile(i, j+1); //to its left
+            Tile below = board.getTile(i+1, j);
+            if (t.letter == 0 && isalpha(nextTo.letter)){ //checks if the tile is empty and the tile next to it has a letter
                 anchors.push_back(board.tiles.at(i));
+                board.tiles.at(i).orient = 1; //horizontal (the way the board normally looks)
+            }
+            if (t.letter == 0 && isalpha(below.letter)){
+                anchors.push_back(board.tiles.at(i));
+                board.tiles.at(i).orient = 2; //vertically
             }
         }
     }
     
     for (int i = 0; i < anchors.size(); i++){ // runs xcheck on all the anchors
-        crossCheck(anchors.at(i));
-        if (anchors.at(i).xchecks !=){
+        crossCheck(anchors.at(i),board);
+        if ((anchors.at(i).xchecks).count() !=0){ //checks to make sure the bitset isn't trivial (all 0s)
             finalAnchs.push_back(anchors.at(i));
         }
     }
@@ -43,7 +47,8 @@ vector<Tile> getAnchors(Board board){
 }
 
 string findPartial(Tile anchor, Board board){
-    /* I think this should be done on rows of tiles, not the entire board. this
+    /* -rlyshw. this is finished. needs testing
+    I think this should be done on rows of tiles, not the entire board. this
      * way we understand the orientation we are working with.
      * In this case, row is a generic list of Tiles, could be either vertical
      * or horizontal
@@ -55,8 +60,6 @@ string findPartial(Tile anchor, Board board){
      
      int dir = anchor.orient;
     
-     //if dir is horiz and x=0 or dir is vert and y is zero, return empty string.
-     if((dir==1 && x==0) || (dir==2 && y==0)) return "";
      
      vector<Tile> row; //the 'row' we are looking at
      int x; //the pos of the anchor
@@ -69,8 +72,10 @@ string findPartial(Tile anchor, Board board){
          row = board.getCol(x);
      } 
      int i=x;
+     //if dir is horiz and x=0 or dir is vert and y is zero, return empty string.
+     if((dir==1 && x==0) || (dir==2 && y==0)) return "";
      string out;
-     for(i;row[i-1].letter!=''&&i>0;i--);//
+     for(i;row[i-1].letter!=0&&i>0;i--);//
      for(i;i<x;i++){
         out.append(row[i].letter);
      }
@@ -78,24 +83,43 @@ string findPartial(Tile anchor, Board board){
 }
 
 int findLimit(Tile anchor, Board board){
+    //Sam--complete, needs testing
     /* args: Tile anchor, the anchor we want to find the left limit of.
      *       Board board, the board to analyze
      * returns: the number of non-anchor tiles to the left of anchor.
      */
     int limit = 0;
+    int xcoord;
+    int ycoord;
     //find the coordinate of the anchor on the board
-    int xcoord = anchor.coords.at(0);
-    int ycoord = anchor.coords.at(1);
-    //check from the anchor to the beginning of the row to add to limit count
-    //if it reaches another anchor limit is stopped
-    for (int i = ycoord; i > 0; i--){
-        //stops the limit count if it hits another anchor
-        if (board.tiles.at(xcoord*15 + i).anchor){
-            return limit;
+    if (anchor.orient ==1){ //computes the limit horizontally
+        xcoord = anchor.coords.at(0);
+        ycoord = anchor.coords.at(1);
+        //check from the anchor to the beginning of the row to add to limit count
+        //if it reaches another anchor limit is stopped
+        for (int i = ycoord; i > 0; i--){
+            //stops the limit count if it hits another anchor
+            if (board.tiles.at(xcoord*15 + i).anchor){
+                return limit;
+            }
+            //increases the limit count for each non-anchor tile left of it that it reaches
+            else{
+                limit++;
+            }
         }
-        //increases the limit count for each non-anchor tile left of it that it reaches
-        else{
-            limit++;
+    }
+    else if (anchor.orient ==2){ //checks the limit vertically if the anchor is orient 2
+        xcoord = anchor.coords.at(0);
+        ycoord = anchor.coords.at(1);
+        for (int i = xcoord; i > 0; i--){
+            //stops the limit count if it hits another anchor
+            if (board.tiles.at(i*15 + ycoord).anchor){
+                return limit;
+            }
+            //increases the limit count for each non-anchor tile left of it that it reaches
+            else{
+                limit++;
+            }
         }
     }
     return limit;

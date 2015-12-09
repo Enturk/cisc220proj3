@@ -2,8 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-//#include weights.cpp          not the right way to include these... not sure what path it should be
-//#include ./lib/structs.cpp
+#include "../lib/weight.cpp"
 using namespace std;
 
 /* Input data consumer functions
@@ -33,7 +32,7 @@ Board boardGen() {
     inFile.open("./board/board.txt");
 
     Board board;
-    board.tiles = new Tile[15*15];
+    board.tiles = vector<Tile>();
 
     if(!inFile){
         cout << "File does not exist?" << endl;
@@ -46,20 +45,27 @@ Board boardGen() {
        int countY = 0;
         // This loops through each line of inFile and stores it
         // in variable x for each iteration.
-        //
-        //   note: the iterator line below looks scary. think of it as
-        //   "for each char it in x"
+
         for(string::iterator it = x.begin(); it!=x.end();++it){
           if (*it == '-'){
-            board.tiles.push_back(new Tile('',0,0, {countX,countY}));
+            vector<int> coords;
+            coords.push_back(countX);
+            coords.push_back(countY);
+            board.tiles.push_back(*(new Tile(0,0,0, coords)));
           }
           if (isalpha(*it)){
-            board.tiles.push_back(new Tile(*it, 0, weight(*it), {countX,countY}));
+            vector<int> coords;
+            coords.push_back(countX);
+            coords.push_back(countY);
+            board.tiles.push_back(*(new Tile(*it, 0, weight(*it), coords)));
           }
           if(isdigit(*it)){
-            board.tiles.push_back(new Tile('', *it, 0, {countX,countY}));
+            vector<int> coords;
+            coords.push_back(countX);
+            coords.push_back(countY);
+            board.tiles.push_back(*(new Tile(0, *it, 0, coords)));
           }
-        countY++;
+          countY++;
         }
         countX++;
     }
@@ -71,18 +77,19 @@ vector<Tile> rackGen() {
     ifstream inFile;
     string x;
 
-    Tile* tiles = new Tile[7];
+    vector<Tile> tiles;
 
     inFile.open("./board/board.txt");
     if(!inFile){
         cout << "File does not exist?" << endl;
-        return 0;
+        return tiles;
     }
     inFile >> x; //Store the rack line in variable x;
-    vector<Tile> rwords(7); // array the tiles that the rack letters make
     // for each char it in x
     for(string::iterator it = x.begin(); it!=x.end();++it){
-        rwords.at(*it) = new Tile(*it, weight(*it), 0, {-1}); // initializes tile with no bonus and default coord of -1
+        vector<int> coords;
+        coords.push_back(-1);
+        tiles.push_back(*(new Tile(*it, weight(*it), 0, coords))); // initializes tile with no bonus and default coord of -1
     }
     inFile.close();
     return tiles;

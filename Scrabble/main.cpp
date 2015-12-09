@@ -2,7 +2,6 @@
 #include <vector>
 #include "./lib/structs.cpp"
 #include "./board/consumer.cpp"
-#include "./lib/trie.cpp"
 #include "./moves/movesGen.cpp"
 // This is basically going to be like an API
 // Tie multiple discrete parts together to form

@@ -1,6 +1,6 @@
 /* this will generate the moves
  *
- * 1. compute each corss-check
+ * 1. compute each cross-check
  * 2. compute the anchor positions
  * 3. compute all possible moves for rows/cols
  *   a. use LeftPart() and ExtendRight() from the paper
@@ -13,52 +13,31 @@
 #include <vector>
 #include "xcheck.cpp"
 #include "utils.cpp"
+#include "../lib/trie.cpp"
 using namespace std;
 
-
-
-
-
-void LeftPart(string partialWord, Node n, int limit){
-    /* ARGS:
-     *  partial word is the string to the left of the anchor
-     *  Node N is in dawg after traversing up to the partial word
-     *  limit is how many open, non-anchor squares there are to the left of the given anchor.
-     *     for finding limit, we might want to add an isAnchor flag to the Tile struct. not sure.
-     * RETURNS:
-     *  This doesn't return anything. Everything is going to be done more-or-less inplace. 
-     *  Actual valid output moves are passed through LegalMove()
-     */
-    ExtendRight(partialWord, n, anchor);
-    if(limit>0){
-        for(/*each edge E out of n*/){
-            if(0/*the letter l labeling edge E*/){
-                /*remove a tile labeled l from the rack
-                 * let N be the node reached by following edge E
-                 */
-                LeftPart(partialWord+l,N, limit-1);
-                /*put tile back into rack*/
-            }
-        }
-    }
-}
-
+Trie root;
 multimap<string, Tile> legalMoves;
+
 void LegalMove(string partialWord, Tile square){
+    //Sam
+    //is this all we need? the parameters to be added to the multimap?
     /*
      * ARGS: string partialWord; the word that is a legal move.
      *       Tile square; the square on which the last letter should be placed.
+     *       ^^Why is it the tile of the last letter? we need to know where to START and which way to go.
      * RETURNS:
      *      none, but it should somehow keep track of all the possible legal moves passed through it.
      *      I've defined multimap<string, tile> legalMoves outside the scope of this function.
      *      It is now global scope and should be accessible from movesGen.
      *      LegalMove should add a record to that map of strings->tiles {string:tile}
      */
+     legalMoves.insert(pair<string,Tile>(partialWord, square));
 }
 
 void ExtendRight(string partialWord, Node n, Tile square){
-    if(0/*square is vacant*/){
-        if(/*n is a terminal node*/0){
+    if(square.letter == 0){
+        if(){
             LegalMove(partialWord,square)//I'm pretty sure the square will be the position of the last letter
         }
         for(/*each edge E out of n*/){
@@ -83,11 +62,35 @@ void ExtendRight(string partialWord, Node n, Tile square){
          }
     }
 }
+void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anchor){
+    /* ARGS:
+     *  partial word is the string to the left of the anchor
+     *  Node N is in dawg after traversing up to the partial word
+     *  limit is how many open, non-anchor squares there are to the left of the given anchor.
+     *     for finding limit, we might want to add an isAnchor flag to the Tile struct. not sure.
+     * RETURNS:
+     *  This doesn't return anything. Everything is going to be done more-or-less inplace. 
+     *  Actual valid output moves are passed through LegalMove()
+     */
+    ExtendRight(partialWord, n, anchor);
+    if(limit>0){
+        for(/*each edge E out of n*/){
+            if(0/*the letter l labeling edge E*/){
+                /*remove a tile labeled l from the rack
+                 * let N be the node reached by following edge E
+                 */
+                LeftPart(partialWord+l,N, limit-1);
+                /*put tile back into rack*/
+            }
+        }
+    }
+}
 
 
 vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
-    // This returns a vector of boards because we don't know how many movess a specific anchor might yeild.
-    /* ARGS: anchor; a Tile that we want to compute moves from.
+    // This returns a vector of boards because we don't know how many moves a specific anchor might yeild.
+    /* orphaned, in progress.
+     * ARGS: anchor; a Tile that we want to compute moves from.
      *       board; the board we are computing moves on.
      *       rack; the rack of tiles we are able to place onto the board.
      * RETURNS:
@@ -95,11 +98,11 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
      *
      *      it should generate the vector of Boards based off of the records of LegalMove.
      */
-    vetor<Board> moves;
-    string partialWord = findPartial(anchor, board, rack);
-    Node n = traverseTrie(partialword);
+    vector<Board> moves;
+    string partialWord = findPartial(anchor, board);
+    Trie n = root.traverse(partialword);
     int limit = findLimit(anchor, board);
-    LeftPart(partialWord, n, limit);
+    LeftPart(partialWord, n, limit, rack, anchor);
     //after this point, LegalMove should have fully populated the legalMoves map above.
     //when converting from the map into a board, also keep track of the score and add it to
     //board.score
@@ -107,6 +110,9 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
 }
 
 vector<Board> movesGen(Board board, vector<Tile> rack){
+    
+    //The trie is not global, I need to intialize it here.
+    root = getTrie();
     crossCheck(board);//after this step, we now know the valid "vertical" placements.
     vector<Tile> anchors = getAnchors(board);
     vector<Board> allMoves;
