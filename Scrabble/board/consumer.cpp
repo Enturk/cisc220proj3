@@ -14,6 +14,7 @@ using namespace std;
  */
 
 Board boardGen() {
+    //the girl
     /* Returns a Board object
      * This board is expected to be comprised of a
      * one-dimensional array of tiles (board.tiles)
@@ -40,9 +41,9 @@ Board boardGen() {
     }
 
     inFile >> x; //skip the first line(the rack)
-    int countX = 0;
+    int countY = 0;
     while(inFile >> x) {
-       int countY = 0;
+       int countX = 0;
         // This loops through each line of inFile and stores it
         // in variable x for each iteration.
 
@@ -65,15 +66,16 @@ Board boardGen() {
             coords.push_back(countY);
             board.tiles.push_back(*(new Tile(0, *it, 0, coords)));
           }
-          countY++;
+          countX++;
         }
-        countX++;
+        countY++;
     }
     inFile.close();
     return board;
 }
 
 vector<Tile> rackGen() {
+    //the girl
     ifstream inFile;
     string x;
 

@@ -3,6 +3,7 @@
 #include <bitset>
 //#include weights.cpp
 using namespace std;
+
 struct Tile {
     //This tile object is flexible enough to represent
     //  1. A wooden tile piece on our rack
@@ -29,6 +30,7 @@ struct Tile {
     }
 };
 
+// Sam
 struct Board {
     // the board has a one dimensional array of Tiles
     vector<Tile> tiles;
@@ -36,7 +38,7 @@ struct Board {
    
     Tile getTile(int col, int row){
         //the index of a tile with coordinates of (x,y) in the 2D array is (15*x)+y.
-        return tiles[15*col + row];
+        return tiles[15*row + col];
     }
 
     vector<Tile> getRow(int row){

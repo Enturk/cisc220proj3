@@ -11,6 +11,8 @@
  * be extracted to their own functions
  */
 #include <vector>
+#include <map>
+#include <multimap>
 #include "xcheck.cpp"
 #include "utils.cpp"
 #include "../lib/trie.cpp"
@@ -20,9 +22,7 @@ Trie root;
 multimap<string, Tile> legalMoves;
 
 void LegalMove(string partialWord, Tile square){
-    //Sam
-    //is this all we need? the parameters to be added to the multimap?
-    /*
+    /*Sam
      * ARGS: string partialWord; the word that is a legal move.
      *       Tile square; the square on which the last letter should be placed.
      *       ^^Why is it the tile of the last letter? we need to know where to START and which way to go.
@@ -35,16 +35,54 @@ void LegalMove(string partialWord, Tile square){
      legalMoves.insert(pair<string,Tile>(partialWord, square));
 }
 
-void ExtendRight(string partialWord, Trie n, Tile square){
+void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile>& rack, Board board){
     if(square.letter == 0){
-        if(n.isEOW){
+        if(n.isEOW){ //if n is a terminal node
             LegalMove(partialWord,square)//I'm pretty sure the square will be the position of the last letter
         }
-        for(/*each edge E out of n*/){
-            if(/*the letter l labeling edge E is in our rack AND l is in the xcheck set of square*/){
+        for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge e out of n*/
+            bool LinRack = false; // l is in rack
+            for(int i=0;i<rack.size();i++){
+                LinRack = rack.at(i).letter==e->first;
+            }
+            bool xchecker = square.xchecks[((int)(e->first))-64]
+            if(LinRack && xchecker){/*the letter l labeling edge E is in our rack AND l is in the xcheck set of square*/
+                
+                //remove a tile l from the rack
+                Tile temp;
+                for(int i=0;i<rack.size();i++){
+                    if(rack.at(i).letter==e->first){
+                        temp = rack.at(i); 
+                        rack.erase(rack.begin()+i-1);//remove rack[i] from the vector
+                        break;
+                    }
+                }
+                n=e->second;//n=node by following edge e
+                
+                //#next-square = the square to the right of square 
+                int x;
+                vector<Tile> row;
+                if(square.orient==1){
+                    x = square.coords.at(0);
+                    row = board.getRow(square.coords.at(1)
+                } else {
+                    x = square.coords.at(1);
+                    row = board.getRow(square.coords.at(0));
+                }
+                if(x==15){
+                    rack.push_back(temp); //Need to find a way to store L globally
+                    return;//i dunno what to return, just return?
+                //If no words have been formed by this point then it won't matter
+                //Can you look into removing/replacing a Tile into the rack vector?
+                nextSquare = row.at(x+1);
+                
+                ExtendRight(partialWord.append(e->first),n,nextSquare,rack,board);
+                //put the tile l back into the rack,somehow
+                
+                
                 /*
                  remove a tile l from the rack
-                 N = the node reached by following edge E
+                 n = the node reached by following edge E
                  next-square = the square to the right of square
                  
                  ExtendRight(partialWord+l,N,next-square)
@@ -53,16 +91,17 @@ void ExtendRight(string partialWord, Trie n, Tile square){
             }
         }
     } else {
-        /* let l be the letter occupying square
-         */
-         if(/*N has an edge labeled by l that leads to some node N*/){
-            /*next-square = tile to the right of square
-             * ExtendRight(partialWord+l, N, next-square
-             */
-         }
+        // let l be the letter occupying square
+        char l = square.letter; 
+        if(trie.hasChild(l)){/*N has an edge labeled by l that leads to some node N*/
+           ExtendRight(partialWord.append(l),n.children[l],nextSquare,rack,board);
+           /*next-square = tile to the right of square
+            * ExtendRight(partialWord+l, N, next-square)
+            */
+        }
     }
 }
-void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anchor){
+void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anchor, Board board){
     /* ARGS:
      *  partial word is the string to the left of the anchor
      *  Node N is in dawg after traversing up to the partial word
@@ -72,7 +111,7 @@ void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anc
      *  This doesn't return anything. Everything is going to be done more-or-less inplace. 
      *  Actual valid output moves are passed through LegalMove()
      */
-    ExtendRight(partialWord, n, anchor);
+    ExtendRight(partialWord, n, anchor, rack, board);
     if(limit>0){
         for(/*each edge E out of n*/){
             if(0/*the letter l labeling edge E*/){
@@ -102,7 +141,7 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
     string partialWord = findPartial(anchor, board);
     Trie n = root.traverse(partialword);
     int limit = findLimit(anchor, board);
-    LeftPart(partialWord, n, limit, rack, anchor);
+    LeftPart(partialWord, n, limit, rack, anchor, board);
     //after this point, LegalMove should have fully populated the legalMoves map above.
     //when converting from the map into a board, also keep track of the score and add it to
     //board.score

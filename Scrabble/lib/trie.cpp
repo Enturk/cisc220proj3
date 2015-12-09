@@ -4,7 +4,7 @@
 #include <map>
 #include <fstream>
 using namespace std;
-//completed to return all words that can be made by the letters in your rack, including a wildcard
+//Sam. completed to return all words that can be made by the letters in your rack, including a wildcard
 
 struct Trie {
     map<char, Trie*> children;
@@ -41,9 +41,35 @@ struct Trie {
         if (isEOW){
             results.push_back(prefix);
         }
-        
+          //object it in chilren
         for(map<char, Trie*>::iterator it = children.begin(); it != children.end(); it++){
-            it->second->getAllWords(prefix + it->first, results);
+            it->second->getAllWords(prefix + it->first, results); //this "it->second" refers to the Trie the iterator is operating on
+            //it->first is the char here
+            
+            
+        }
+    }
+    
+    Trie traverse(string str){
+        //Sam
+        /*ARGS: str; string that we want to travel to in the trie
+          RETURNS: Trie; the literal node that the str stops on
+          
+          This essentially crops a trie up to the input string.
+          So if we had the string STO,
+          traverse should travel along the S child to that node,
+          then the T child of that node, then the O child 
+          */
+        
+        string next = str.substr(1,str.size()-1);
+        for (map<char, Trie*>::iterator it = children.begin(); it!= children.end(); it++){
+            if (str.size()==1){
+                return it->second;
+            }
+            
+            if (it->first == str[0]){
+                it->second->traverse(next);
+            }
         }
     }
     
@@ -81,6 +107,7 @@ struct Trie {
 
         (children[input[0]])->insert(input+1, length-1);
     }
+    
     
     Trie(){
         isEOW = false;

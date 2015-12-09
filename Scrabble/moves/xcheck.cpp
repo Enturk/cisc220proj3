@@ -8,7 +8,7 @@
 using namespace std;
 
 // Nazim
-// Incomplete
+// will not compile 
 
 void crossCheck(Tile& tile, Board& board){
     /* This has to go through the board(rows and cols), look at the corresponding adjacent
@@ -54,15 +54,19 @@ void crossCheck(Tile& tile, Board& board){
     
     Easier to debug one implementation, not two. That being said, I'll clean up other code and let you finish here.
     but pls don't rewrite a partial word finding function
+    
+    Nazim says: I don't think partial word will find words that go across the anchor tile
+    ... or at least not in this implementation. Riley pushed for this, but I'm not sure how to implement that.
     */
     string partialword = findPartial(tile, board);
+    int wordLength = partialword.length()+1;
     Trie trie = getTrie();
-    // string bitContainer = "00000000000000000000000000"; // container 
+    // string bitContainer = "00000000000000000000000000"; // container  (unused)
     string word;
     string alphabet =     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for (int i = 0; i > 26; i++){
+    for (int i = 0; i < 26; i++){
         word = partialword + alphabet[i];
-        tile.xchecks[i] = trie.hasWord(word); // I'm a genius. That's Nazim. He really is. 
+        tile.xchecks[i] = trie.hasWord(word, wordLength); // I'm a genius. That's Nazim. He really is. 
     }
 
     

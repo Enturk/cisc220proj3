@@ -1,3 +1,12 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include <fstream>
+//#include "../lib/structs.cpp"
+//#include "../moves/xcheck.cpp"
+using namespace std;
+
 vector<Tile> getAnchors(Board board){
     //Sam-complete, needs testing
     /* Args: board; a Board with tiles on it. Tiles should have a completed xchecks vector associated w/ them.
@@ -21,8 +30,8 @@ vector<Tile> getAnchors(Board board){
     for (int i = 0; i< 15; i++){ //rows
         for (int j = 0; j < 14; j++){ // has to go only to 14 because we do j+1 //cols
             Tile t = board.getTile(i,j);
-            Tile nextTo = board.getTile(i, j+1); //to its left
-            Tile below = board.getTile(i+1, j);
+            Tile nextTo = board.getTile(i+1, j); //to its left
+            Tile below = board.getTile(i, j+1);
             if (t.letter == 0 && isalpha(nextTo.letter)){ //checks if the tile is empty and the tile next to it has a letter
                 anchors.push_back(board.tiles.at(i));
                 board.tiles.at(i).orient = 1; //horizontal (the way the board normally looks)
@@ -60,24 +69,24 @@ string findPartial(Tile anchor, Board board){
      
      int dir = anchor.orient;
     
+     //if dir is horiz and x=0 or dir is vert and y is zero, return empty string.
+     if((dir==1 && anchor.coords.at(0)==0) || (dir==2 && anchor.coords.at(1)==0)) return "";
      
      vector<Tile> row; //the 'row' we are looking at
      int x; //the pos of the anchor
-     if(dir==1){
-         x = anchor.coords[1];
-         row = board.getRow(x);
+     if(dir==1){ //we going horizontally
+         x = anchor.coords.at(0);
+         row = board.getRow(anchor.coords.at(1));
      }
-     else{
-         x = anchor.coords[0];
-         row = board.getCol(x);
+     else{ // we going vertically
+         x = anchor.coords.at(1);
+         row = board.getCol(anchor.coords.at(0));
      } 
      int i=x;
-     //if dir is horiz and x=0 or dir is vert and y is zero, return empty string.
-     if((dir==1 && x==0) || (dir==2 && y==0)) return "";
      string out;
-     for(i;row[i-1].letter!=0&&i>0;i--);//
+     for(i;row.at(i-1).letter!=0&&i>0;i--);//
      for(i;i<x;i++){
-        out.append(row[i].letter);
+        out.append(row.at(i).letter);
      }
      return out;
 }
