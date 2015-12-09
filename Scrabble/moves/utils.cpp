@@ -3,9 +3,20 @@
 #include <vector>
 #include <map>
 #include <fstream>
-//#include "../lib/structs.cpp"
-//#include "../moves/xcheck.cpp"
+
+/*
+#ifndef STRUCTS_I
+#define STRUCTS_I
+#include "../lib/structs.cpp"
+#endif
+#ifndef XCHECK_I
+#define XCHECK_I
+#include "../moves/xcheck.cpp"
+#endif
+*/
 using namespace std;
+
+void crossCheck(Tile&, Board&);
 
 vector<Tile> getAnchors(Board board){
     //Sam-complete, needs testing
@@ -86,7 +97,7 @@ string findPartial(Tile anchor, Board board){
      string out;
      for(i;row.at(i-1).letter!=0&&i>0;i--);//
      for(i;i<x;i++){
-        out.append(row.at(i).letter);
+        out.append(string(1,row.at(i).letter));
      }
      return out;
 }

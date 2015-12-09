@@ -19,7 +19,7 @@
 using namespace std;
 
 Trie root;
-multimap<string, Tile> legalMoves;
+multimap<string, vector<Tile>> legalMoves;
 
 void LegalMove(string partialWord, Tile square){
     /*Sam
@@ -31,6 +31,20 @@ void LegalMove(string partialWord, Tile square){
      *      I've defined multimap<string, tile> legalMoves outside the scope of this function.
      *      It is now global scope and should be accessible from movesGen.
      *      LegalMove should add a record to that map of strings->tiles {string:tile}
+     
+     -----
+     -----
+     -CAT-
+     --#O-
+     --*O-
+     
+     -----
+     -*C--
+     -#A--
+     OOT--
+     -----
+     
+     HASH IS AN ANCHOR FOR VERTICAL AND HORIZONTAL. MASS HYSTERIA.
      */
      legalMoves.insert(pair<string,Tile>(partialWord, square));
 }
@@ -74,9 +88,12 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Boa
                     return;//i dunno what to return, just return?
                 }
                 //If no words have been formed by this point then it won't matter
-                nextSquare = row.at(x+1);
+                Tile nextSquare = row.at(x+1);
+                int tempOrient = nextSquare.orient;
+                nextSquare.orient=square.orient;
                 
                 ExtendRight(partialWord.append(e->first),n,nextSquare,rack,board);
+                nextSquare.orient = tempOrient;
                 rack.push_back(temp); //put the tile l back into the rack
                 
                 
@@ -104,8 +121,11 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Boa
                 row = board.getRow(square.coords.at(0));
             }
             if(x==15) return;//i dunno what to return, just return?
-            nextSquare = row.at(x+1);
+            Tile nextSquare = row.at(x+1);
+            int tempOrient = nextSquare.orient;
+            nextSquare.orient=square.orient;
             ExtendRight(partialWord.append(l),*(n.children[l]),nextSquare,rack,board);
+            nextSquare.orient = tempOrient;
            /*next-square = tile to the right of square
             * ExtendRight(partialWord+l, N, next-square)
             */
@@ -156,8 +176,30 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
     //after this point, LegalMove should have fully populated the legalMoves map above.
     //when converting from the map into a board, also keep track of the score and add it to
     //board.score
+    
     return /* convert the legalMoves map into a vector of boards*/NULL;
 }
+
+vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
+    /* Sam
+       returns the top 20 boards based on the boards find moves will return
+    */
+    vector<Board> best;
+    for (int i = 0; i < moves.size()-1; i++){ 
+        for (int j = 0; j < moves.size()-1; i++){
+            if (moves.at(i).score > moves.at(i+1).score){
+                Board temp = moves.at(i);
+                moves.at(i) = moves.at(i+1);
+                moves.at(i+1) = temp
+            }
+        }
+    }
+    for (int i= 0; i <20; i++){
+        best.push_back(moves.at(i));;
+    }
+    return best;  
+}
+   
 
 vector<Board> movesGen(Board board, vector<Tile> rack){
     

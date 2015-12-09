@@ -12,7 +12,7 @@ struct Tile {
     char letter; //tile's letter (0 if no letter)
     int weight; // letter's score (0 if above is zero)
     int bonus; // bonus on that tile (only if representing an empty spot on the board
-    vector<int> coords; // position of tile on board
+    vector<int> coords; // position of tile on board; -1 if in rack
     bool anchor;
     int orient;
     bitset<26> xchecks;
@@ -75,7 +75,7 @@ struct Board {
         for(int i=0;i<15;i++){
             for(int j=0;j<15;j++){
                 Tile tile = getTile(j,i);
-                if(tile.letter==0)os << '-';
+                if(tile.letter==0) os << '-';
                 else os << tile.letter;
             }
         }

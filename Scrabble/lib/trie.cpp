@@ -60,11 +60,10 @@ struct Trie {
           traverse should travel along the S child to that node,
           then the T child of that node, then the O child 
           */
-        
         string next = str.substr(1,str.size()-1);
         for (map<char, Trie*>::iterator it = children.begin(); it!= children.end(); it++){
             if (str.size()==1){
-                return it->second;
+                return *(it->second);
             }
             
             if (it->first == str[0]){

@@ -1,14 +1,16 @@
 #include <iostream>
 #include <vector>
 #include <bitset>
-#include <string>
-#include "utils.cpp"
+#include <string.h>
 #include "../lib/structs.cpp"
 #include "../lib/trie.cpp"
+#include "../board/consumer.cpp"
+#include "utils.cpp"
 using namespace std;
 
 // Nazim
 // will not compile 
+string findPartial(Tile,Board);
 
 void crossCheck(Tile& tile, Board& board){
     /* This has to go through the board(rows and cols), look at the corresponding adjacent
@@ -57,7 +59,16 @@ void crossCheck(Tile& tile, Board& board){
     
     Nazim says: I don't think partial word will find words that go across the anchor tile
     ... or at least not in this implementation. Riley pushed for this, but I'm not sure how to implement that.
+    
+    what nazim says is right. partial word will get whatever is to the left in the contiguous row.
+    but what you want to find is what is above. simple fix is to flip the orientation so that findPartial thinks it should go upwards.
+    tile orientations are either 1 for horizontal, or 2 for vertical. also 3 for both. findPartial doesn't handle the orient=3 case.
+    
+    set orientation like
+    tile.orient=whatever.
+    whatever above should be the opposite(1 is 2, and 2 is 1) of the original.
     */
+    // 
     string partialword = findPartial(tile, board);
     int wordLength = partialword.length()+1;
     Trie trie = getTrie();
@@ -66,7 +77,11 @@ void crossCheck(Tile& tile, Board& board){
     string alphabet =     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for (int i = 0; i < 26; i++){
         word = partialword + alphabet[i];
-        tile.xchecks[i] = trie.hasWord(word, wordLength); // I'm a genius. That's Nazim. He really is. 
+        
+        char *y = new char[word.length()+1];
+        strcpy(y, word.c_str());
+        tile.xchecks[i] = trie.hasWord(y, wordLength); // I'm a genius. That's Nazim. He really is. 
+        delete[] y;
     }
 
     
@@ -172,3 +187,9 @@ void crossCheck(Tile& tile, Board& board){
 
     
 };
+
+
+int main(){
+    
+    cout << "censored of fire"<<endl;
+}
