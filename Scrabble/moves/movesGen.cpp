@@ -35,7 +35,7 @@ void LegalMove(string partialWord, Tile square){
      legalMoves.insert(pair<string,Tile>(partialWord, square));
 }
 
-void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile>& rack, Board board){
+void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Board board){
     if(square.letter == 0){
         if(n.isEOW){ //if n is a terminal node
             LegalMove(partialWord,square)//I'm pretty sure the square will be the position of the last letter
@@ -53,11 +53,11 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile>& rack, Bo
                 for(int i=0;i<rack.size();i++){
                     if(rack.at(i).letter==e->first){
                         temp = rack.at(i); 
-                        rack.erase(rack.begin()+i-1);//remove rack[i] from the vector
+                        rack.erase(rack.begin()+i);//remove rack[i] from the vector
                         break;
                     }
                 }
-                n=e->second;//n=node by following edge e
+                n=*(e->second);//n=node by following edge e
                 
                 //#next-square = the square to the right of square 
                 int x;
@@ -70,14 +70,14 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile>& rack, Bo
                     row = board.getRow(square.coords.at(0));
                 }
                 if(x==15){
-                    rack.push_back(temp); //Need to find a way to store L globally
+                    rack.push_back(temp);
                     return;//i dunno what to return, just return?
+                }
                 //If no words have been formed by this point then it won't matter
-                //Can you look into removing/replacing a Tile into the rack vector?
                 nextSquare = row.at(x+1);
                 
                 ExtendRight(partialWord.append(e->first),n,nextSquare,rack,board);
-                //put the tile l back into the rack,somehow
+                rack.push_back(temp); //put the tile l back into the rack
                 
                 
                 /*
@@ -94,7 +94,18 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile>& rack, Bo
         // let l be the letter occupying square
         char l = square.letter; 
         if(trie.hasChild(l)){/*N has an edge labeled by l that leads to some node N*/
-           ExtendRight(partialWord.append(l),n.children[l],nextSquare,rack,board);
+            int x;
+            vector<Tile> row;
+            if(square.orient==1){
+                x = square.coords.at(0);
+                row = board.getRow(square.coords.at(1)
+            } else {
+                x = square.coords.at(1);
+                row = board.getRow(square.coords.at(0));
+            }
+            if(x==15) return;//i dunno what to return, just return?
+            nextSquare = row.at(x+1);
+            ExtendRight(partialWord.append(l),*(n.children[l]),nextSquare,rack,board);
            /*next-square = tile to the right of square
             * ExtendRight(partialWord+l, N, next-square)
             */
@@ -113,7 +124,7 @@ void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anc
      */
     ExtendRight(partialWord, n, anchor, rack, board);
     if(limit>0){
-        for(/*each edge E out of n*/){
+        for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge E out of n*/
             if(0/*the letter l labeling edge E*/){
                 /*remove a tile labeled l from the rack
                  * let N be the node reached by following edge E
