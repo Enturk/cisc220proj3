@@ -122,15 +122,15 @@ vector<Tile> getAnchors(Board board){
     for (int i =1; i <14; i++){
         vector<Tile> row = board.getRow(i);
         vector<Tile> col = board.getCol(i);
-        if (row.at(i).letter == 0 && (isalpha(row.at(i+1)) || isalpha(row.at(i-1))){
+        if (row.at(i).letter == 0 && (isalpha(row.at(i+1).letter) || isalpha(row.at(i-1).letter)){
             crossCheck(row.at(i), board);
             row.at(i).orient = 1;
         }
-        if (col.at(i).letter == 0 && (isalpha(col.at(i+1)) || isalpha(rcol.at(i-1))){
+        if (col.at(i).letter == 0 && (isalpha(col.at(i+1).letter) || isalpha(rcol.at(i-1).letter)){
             crossCheck(row.at(i), board);
             row.at(i).orient =2;
         }
-        if (col.at(i).letter == 0 && (isalpha(col.at(i+1)) || isalpha(rcol.at(i-1)) && row.at(i).letter == 0 && (isalpha(row.at(i+1)) || isalpha(row.at(i-1))){
+        if (col.at(i).letter == 0 && (isalpha(col.at(i+1).letter) || isalpha(rcol.at(i-1).letter) && row.at(i).letter == 0 && (isalpha(row.at(i+1).letter) || isalpha(row.at(i-1).letter)){
             crossCheck(row.at(i), board);
             row.at(i).orient = 3;
         }
