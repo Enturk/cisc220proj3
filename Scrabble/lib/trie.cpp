@@ -1,7 +1,4 @@
 #include <iostream>
-//#include <string>
-//#include <vector>
-//#include <map>
 #include <fstream>
 using namespace std;
 //Sam. completed to return all words that can be made by the letters in your rack, including a wildcard

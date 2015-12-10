@@ -10,15 +10,6 @@
  * If this function becomes too monolithic, steps 4+5 can
  * be extracted to their own functions
  */
-<<<<<<< HEAD
-//#include <vector>
-//#include <map>
-//#include "xcheck.cpp"
-=======
-#include <vector>
-#include <map>
-#include "xcheck.cpp"
->>>>>>> daeaec4260354790be8dc5322839ee1c824b78d7
 #include "utils.cpp"
 using namespace std;
 
