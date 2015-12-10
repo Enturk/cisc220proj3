@@ -104,7 +104,11 @@ vector<Tile> getAnchors(Board board){
             }
             if (t.letter == 0 && isalpha(nextTo.letter) && isalpha(below.letter)){
                 anchors.push_back(board.tiles.at(i));
+<<<<<<< HEAD
                 board.tiles.at(i).orient = 3; //vertically AND horizontally. special.
+=======
+                board.tiles.at(i).orient = 3; //vertically AND horizontally. special. 
+>>>>>>> daeaec4260354790be8dc5322839ee1c824b78d7
             }
         }
     }
@@ -173,6 +177,7 @@ int getScore(string partialWord, Board board, tile endTile){
          *       endTile; last tile of the word in question
          *RETURNS: The score of the playable word
          */
+<<<<<<< HEAD
         int score = 0;
         vector<Tile> x;
         int xcoord = endTile.coords.at(0);
@@ -197,3 +202,26 @@ int getScore(string partialWord, Board board, tile endTile){
         }
 
     }
+=======
+        vector<tile> x;
+        int xcoord = endTile.coords.at(0);
+        int ycoord = endTile.coords.at(1);
+        
+        //If the word is horizontally oriented, this is the right-most board letter of the word
+        tile rightEnd = board.getTile(xcoord - partialWord.length(), ycoord); 
+        
+        //If the word is vertically oriented, this is the bottom-most board letter of the word
+        tile bottomEnd = board.getTile(xcoord, ycoord - partialWord.length());
+        
+        //Checks to see if this word is horizontally oriented
+        if(rightEnd.letter != 0){
+            
+        }
+        
+        //Checks to see if this word is horizontally oriented
+        else if(bottomEnd != 0){
+            
+        }
+         
+    }
+>>>>>>> daeaec4260354790be8dc5322839ee1c824b78d7

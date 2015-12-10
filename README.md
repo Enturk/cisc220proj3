@@ -40,36 +40,19 @@ G--2---9---2SIB
 Flowbart:
 http://imgur.com/gallery/YnZXqob
 
-Roadmap and TODO:
+Functionality and problems:
 
-1. check and fix board[][] in main, scoreplay and scoreword
+1. Main calls boardGen (in consumer) to import saved text file into board.
 
-2. Import or create board (readboard)
+    a. #includes may prevent compiling 
+    b. Needs a UI (load question)
 
-3. Initialize dictionary (trie)
+2. Main calls rackGen (in consumer) to import saved text file into rack
+3. Main calls movesGen to accumulate possible moves 
    
-    a. fix map type issue in trie
+    a. #includes may prevent compiling 
 
-    b. fix insert issue in trie
+4.  Main sorts moves by score
+5.  trim list to top 20.
+6.  print out moves (with option to display them on a board)
 
-    c. sort into pre and post-fixes
-
-4. Find anchor positions (anchorfinder)
-    
-    a. move isBlank to its own file
-
-5. Create list of legal words (Words?). Legal words must:
-
-    a. use letters on the board or the middle square
-
-    b. use letters on the rack
-
-    c. fit on the board
-
-    d. make words in the dictionary in all directions
-
-6. Trim list to top 20 scorers (scoreplay, scoreword, weight)
-
-7. debug & test & repeat
-
-8. Remove space from showboard

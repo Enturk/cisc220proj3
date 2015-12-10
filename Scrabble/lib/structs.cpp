@@ -61,7 +61,6 @@ struct Board {
          return c;
     }
 
-
     ostream& operator<<(const Board& board){
         /* This may or may not be working
          * ARGS: const Board& board; an input board
