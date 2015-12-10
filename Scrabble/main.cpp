@@ -17,7 +17,7 @@ int main() {
     
     string partial = findPartial(anchors.at(0), board); //test
     
-    int limit = findLimit(anchor.at(0), board); //test
+    int limit = findLimit(anchors.at(0), board); //test
     
     //vector<Board> moves = movesGen(board, rack);
     // the only thing left to do is sort moves by move.score.
@@ -28,6 +28,6 @@ int main() {
     vector<Board> answers;
     answers = movesGen(board, rack); //returns a vector of boards... we need to then display them.
     for (int i = 0; i < answers.size(); i++){
-        cout << answers.at(i); //if riley's overloader works this will print all them out
+        //cout << answers.at(i); //if riley's overloader works this will print all them out
     }
 }

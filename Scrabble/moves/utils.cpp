@@ -56,6 +56,7 @@ string findPartial(Tile anchor, Board board){
 }
 
 void crossCheck(Tile& tile, Board& board){
+    // Nazim
     /* Need to deal with orientation and other side of the tile
     tile.orient is 1 if just horizontal, 2 if just vertical, 3 if both
     
@@ -97,7 +98,7 @@ void crossCheck(Tile& tile, Board& board){
       temp.orient = 2;
       crossCheck(temp, board);
       bitset<26> xcheck2 = temp.xchecks;
-      tile.xchecks = xcheck1 && xcheck2;
+      tile.xchecks = (xcheck1 & xcheck2);
 /*        for (int i = 0; i < 26; i++){
           word = partialword + alphabet[i];
           char *y = new char[word.length()+1];
@@ -106,13 +107,14 @@ void crossCheck(Tile& tile, Board& board){
           delete[] y;
         }
     tile.orient = 2*/
-  } 
+  } else {
   for (int i = 0; i < 26; i++){
       word = partialword + alphabet[i];
       char *y = new char[word.length()+1];
       strcpy(y, word.c_str());
       tile.xchecks[i] = trie.hasWord(y, wordLength); // I'm a genius. That's Nazim. He really is.
       delete[] y;
+    } 
   }
     /*if (swingBothWays){
       tile.orient = 3;
@@ -156,21 +158,22 @@ vector<Tile> getAnchors(Board board){
             if (t.letter == 0 && isalpha(nextTo.letter) && isalpha(below.letter)){
                 anchors.push_back(board.tiles.at(i));
                 board.tiles.at(i).orient = 3; //vertically AND horizontally. special.
+            }
         }
     }
     //cross checks eberything that is adjacent to a filled tile.
     for (int i =1; i <14; i++){
         vector<Tile> row = board.getRow(i);
         vector<Tile> col = board.getCol(i);
-        if (row.at(i).letter == 0 && (isalpha(row.at(i+1).letter) || isalpha(row.at(i-1).letter)){
+        if (row.at(i).letter == 0 && (isalpha(row.at(i+1).letter) || isalpha(row.at(i-1).letter))){
             crossCheck(row.at(i), board);
             row.at(i).orient = 1;
         }
-        if (col.at(i).letter == 0 && (isalpha(col.at(i+1).letter) || isalpha(rcol.at(i-1).letter)){
+        if (col.at(i).letter == 0 && (isalpha(col.at(i+1).letter) || isalpha(col.at(i-1).letter))){
             crossCheck(row.at(i), board);
             row.at(i).orient =2;
         }
-        if (col.at(i).letter == 0 && (isalpha(col.at(i+1).letter) || isalpha(rcol.at(i-1).letter) && row.at(i).letter == 0 && (isalpha(row.at(i+1).letter) || isalpha(row.at(i-1).letter)){
+        if (col.at(i).letter == 0 && (isalpha(col.at(i+1).letter) || isalpha(col.at(i-1).letter) && row.at(i).letter == 0 && (isalpha(row.at(i+1).letter) || isalpha(row.at(i-1).letter)))){
             crossCheck(row.at(i), board);
             row.at(i).orient = 3;
         }
@@ -228,7 +231,6 @@ int findLimit(Tile anchor, Board board){
             }
         }
     }
-    else if ()
     return limit;
 }
 
@@ -239,8 +241,7 @@ int getScore(string partialWord, Board board, Tile endTile){
          *       endTile; last tile of the word in question
          *RETURNS: The score of the playable word
          */
-        Board tempBoard = new Board;
-        tempBoard = board;
+        Board tempBoard = board;
         int x = endTile.coords.at(0);
         int y = endTile.coords.at(1);
         int score = 0;
@@ -249,7 +250,7 @@ int getScore(string partialWord, Board board, Tile endTile){
         int length = partialWord.length();
 
         //Word is horizontally oriented
-        if (endTile.orient = 1){
+        if (endTile.orient == 1){
             //Places tiles onto a temporary side board in order to compute values of all
             //letters in the board in place
             for(int i = length; i >= 0; i--){
@@ -271,7 +272,7 @@ int getScore(string partialWord, Board board, Tile endTile){
                     tripleWord += 1;
                 }
                 //Move endTile over by 1 to the left
-                endTile.coords.at(0) = tempBoard.getTile(endTile.coords.at(0)-1, y);
+                endTile = tempBoard.getTile(endTile.coords.at(0)-1, y);
             }
                 
             //adds score of adjacent connected letters above each letter in the word to the total score
@@ -294,7 +295,7 @@ int getScore(string partialWord, Board board, Tile endTile){
         
         
         //Word is vertically oriented 
-        else if (endTile.orient = 1){
+        else if (endTile.orient == 2){
             //Places tiles onto a temporary side board in order to compute values of all
             //letters in the board in place
             for(int i = length; i >= 0; i--){
@@ -316,7 +317,7 @@ int getScore(string partialWord, Board board, Tile endTile){
                     tripleWord += 1;
                 }
                 //Move endTile over by 1 up
-                endTile.coords.at(0) = tempBoard.getTile(x, endTile.coords.at(1)-1);
+                endTile = tempBoard.getTile(x, endTile.coords.at(1)-1);
             }
                 
                 
@@ -330,7 +331,7 @@ int getScore(string partialWord, Board board, Tile endTile){
                 
             Tile right = tempBoard.getTile(x + 1, endTile.coords.at(1));
             if(right.letter != 0){
-                while(below.coords.at(0) <= 15 && right.letter != 0){
+                while(right.coords.at(0) <= 15 && right.letter != 0){
                     score += weight(right.letter);
                     right = tempBoard.getTile(right.coords.at(0) + 1, right.coords.at(1));
                 }

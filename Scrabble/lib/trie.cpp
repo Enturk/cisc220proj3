@@ -2,8 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "../lib/structs.cpp"
-#include "../lib/weight.cpp";
+#include "../lib/weight.cpp"
 #include <fstream>
 using namespace std;
 //Sam. completed to return all words that can be made by the letters in your rack, including a wildcard

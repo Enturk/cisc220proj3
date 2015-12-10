@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "./moves/movesGen.cpp"
+#include "../moves/movesGen.cpp"
 using namespace std;
 
 /* Input data consumer functions
