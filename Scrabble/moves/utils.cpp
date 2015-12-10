@@ -56,6 +56,12 @@ string findPartial(Tile anchor, Board board){
 }
 
 void crossCheck(Tile& tile, Board& board){
+    /* Need to deal with orientation and other side of the tile
+    tile.orient is 1 if just horizontal, 2 if just vertical, 3 if both
+    after running partial word horizontally (if necessary) => result 1
+    do get col, run findPartial on the right tile => result 2
+    loop tile.xchecks to result 1 AND result 2
+    */
   int tempOrient = tile.orient;
   if(tile.orient==1)tile.orient=2;
   if(tile.orient==2)tile.orient=1;
@@ -118,13 +124,18 @@ vector<Tile> getAnchors(Board board){
         vector<Tile> col = board.getCol(i);
         if (row.at(i).letter == 0 && (isalpha(row.at(i+1)) || isalpha(row.at(i-1))){
             crossCheck(row.at(i), board);
+            row.at(i).orient = 1;
         }
         if (col.at(i).letter == 0 && (isalpha(col.at(i+1)) || isalpha(rcol.at(i-1))){
             crossCheck(row.at(i), board);
+            row.at(i).orient =2;
+        }
+        if (col.at(i).letter == 0 && (isalpha(col.at(i+1)) || isalpha(rcol.at(i-1)) && row.at(i).letter == 0 && (isalpha(row.at(i+1)) || isalpha(row.at(i-1))){
+            crossCheck(row.at(i), board);
+            row.at(i).orient = 3;
         }
     }
     for (int i = 0; i < anchors.size(); i++){ // runs xcheck on all the anchors
-        crossCheck(anchors.at(i),board);
         if ((anchors.at(i).xchecks).count() !=0){ //checks to make sure the bitset isn't trivial (all 0s)
             finalAnchs.push_back(anchors.at(i));
         }
@@ -177,6 +188,7 @@ int findLimit(Tile anchor, Board board){
             }
         }
     }
+    else if ()
     return limit;
 }
 
@@ -189,56 +201,45 @@ int getScore(string partialWord, Board board, Tile endTile){
          */
 
         int score = 0;
-        vector<Tile> x;
+        int doubleWord = 0;
+        int tripleWord = 0;
+        int length = partialWord.length();
         int xcoord = endTile.coords.at(0);
         int ycoord = endTile.coords.at(1);
-
-        //If the word is horizontally oriented, this is the right-most board letter of the word
-        Tile rightEnd = board.getTile(xcoord - partialWord.length(), ycoord);
-
-        //If the word is vertically oriented, this is the bottom-most board letter of the word
-        Tile bottomEnd = board.getTile(xcoord, ycoord - partialWord.length());
-
-        //Checks to see if this word is horizontally oriented
-        if(rightEnd.letter != 0){ //FIXME: this won't work because it to hit an unrelated tile. We need more data on the word.
-            for(int i = 0; i < partialWord.length(); i++){
-                score += weight(partialWord.at(i));
-            }
-        }
-
-        //Checks to see if this word is horizontally oriented
-        else if(bottomEnd != 0){ //FIXME: same as above check
-
-        }
-
-    }
-        int xcoord = endTile.coords.at(0);
-        int ycoord = endTile.coords.at(1);
-
-        //If the word is horizontally oriented, this is the right-most board letter of the word
-        Tile rightEnd = board.getTile(xcoord - partialWord.length(), ycoord);
-
-        //If the word is vertically oriented, this is the bottom-most board letter of the word
-        Tile bottomEnd = board.getTile(xcoord, ycoord - partialWord.length());
-        
-        for(int i = 0; i < partialWord.length(); i++){
-            score += weight(partialWord.at(i));
-        }
-        
         int tempCoord;
-        //Checks to see if this word is horizontally oriented
-        if(rightEnd.letter != 0){ //FIXME: this won't work because it could just be hitting a random unrelated tile. We need more data on the word.
-            while(rightEnd.coords.at(0) >= 0 && rightEnd.letter !=0){
-                score += weight(rightEnd.letter);
-                tempCoord = rightEnd.coords.at(0)
-                rightEnd = board.getTile(tempCoord - 1);
+        Tile boardTile;
+        Tile tempTile;
+        
+        //Word is horizontally oriented
+        if (endTile.orient = 1){
+            while(endTile.coords.at(0) >= 0 && endTile.letter != 0){
+                if(endTile.bonus == 2 || endTile.bonus == 3){
+                    score += (weight(endTile.letter)*endTile.bonus);
+                }
+                if(en)
+                tempCoord = boardTile.coords.at(0);
+                boardTile = board.getTile(tempCoord - 1, ycoord);
+            }
+            
+            boardTile = board.getTile(xcoord - partialWord.length(), ycoord);
+            while(boardTile.coords.at(0) >= 0 && rightEnd.letter !=0){
+                score += weight(boardTile.letter);
+                tempCoord = boardTile.coords.at(0);
+                boardTile = board.getTile(tempCoord - 1, ycoord);
             }
         }
-
-        //Checks to see if this word is horizontally oriented
-        else if(bottomEnd != 0){ //FIXME: same as above check
-
+        
+        /*
+        //Word is vertically oriented
+        else if (endTile.orient = 2){
+            boardTile = board.getTile(xcoord, ycoord - partialWord.length());
+            while(bottomEnd.coords.at(1) >= 0 && bottomEnd.letter !=0){
+                score += weight(bottomEnd.letter);
+                tempCoord = bottomEnd.coords.at(1);
+                bottomEnd = board.getTile(xcoord, tempCoord - 1);
+            }
         }
+        */
         
         //Need code here to multiply final score by bonuses
 

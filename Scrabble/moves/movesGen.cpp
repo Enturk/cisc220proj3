@@ -179,6 +179,10 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
      *      it should generate the vector of Boards based off of the records of LegalMove.
      */
     vector<Board> moves;
+    string.partialWord;
+    if(anchor.orient==3){
+        
+    }
     string partialWord = findPartial(anchor, board);
     Trie n = root.traverse(partialWord);
     int limit = findLimit(anchor, board);
@@ -219,11 +223,8 @@ vector<Board> movesGen(Board board, vector<Tile> rack){
     vector<Tile> anchors = getAnchors(board);
     vector<Board> allMoves;
     for(int i=0;i<anchors.size();i++){
-        vector<Board> moves = findMoves(anchors[i], board, rack);
-        for(int j=0;i<moves.size();j++){
-            allMoves.push_back(moves[j]);
-        }
+        allMoves = push_back(findMoves(anchors[i], board, rack));
     }
-    moves = findBest(moves);
+    allMoves = findBest(allMoves);
     return allMoves;
 }

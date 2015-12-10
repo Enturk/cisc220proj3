@@ -144,13 +144,6 @@ Trie getTrie() {
     }
     return 0;*/
 }
-//I DONT KNOW WHAT I"M DOING, but we need something like this in the trie -rlyshw
-/*Node traverseTrie(string partialWord){
-     This needs to be part of the trie itself.
-        args: string partialWord. the string we want to travel up to
-     * returns: a Node object, a piece of the trie with labeled edges and an acceptState boolean
-
-}*/
 
 //we also need a way of getting all possible letters from a given node
 // we also need a way of getting the next node along the path of a letter.
