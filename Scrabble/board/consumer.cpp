@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "../lib/structs.cpp"
 #include "../lib/weight.cpp"
 using namespace std;
 

@@ -10,16 +10,14 @@
  * If this function becomes too monolithic, steps 4+5 can
  * be extracted to their own functions
  */
-#include <vector>
-#include <map>
-#include <multimap>
-#include "xcheck.cpp"
+//#include <vector>
+//#include <map>
+//#include "xcheck.cpp"
 #include "utils.cpp"
-#include "../lib/trie.cpp"
 using namespace std;
 
-Trie root;
-multimap<string, vector<Tile>> legalMoves;
+//Trie root;
+multimap<string, vector<Tile> > legalMoves;
 
 void LegalMove(string partialWord, Tile square){
     /*Sam
@@ -31,19 +29,19 @@ void LegalMove(string partialWord, Tile square){
      *      I've defined multimap<string, tile> legalMoves outside the scope of this function.
      *      It is now global scope and should be accessible from movesGen.
      *      LegalMove should add a record to that map of strings->tiles {string:tile}
-     
+
      -----
      -----
      -CAT-
      --#O-
      --*O-
-     
+
      -----
      -*C--
      -#A--
      OOT--
      -----
-     
+
      HASH IS AN ANCHOR FOR VERTICAL AND HORIZONTAL. MASS HYSTERIA.
      */
      legalMoves.insert(pair<string,Tile>(partialWord, square));
@@ -52,33 +50,33 @@ void LegalMove(string partialWord, Tile square){
 void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Board board){
     if(square.letter == 0){
         if(n.isEOW){ //if n is a terminal node
-            LegalMove(partialWord,square)//I'm pretty sure the square will be the position of the last letter
+            LegalMove(partialWord,square); //I'm pretty sure the square will be the position of the last letter
         }
         for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge e out of n*/
             bool LinRack = false; // l is in rack
             for(int i=0;i<rack.size();i++){
                 LinRack = rack.at(i).letter==e->first;
             }
-            bool xchecker = square.xchecks[((int)(e->first))-64]
+            bool xchecker = square.xchecks[((int)(e->first))-64];
             if(LinRack && xchecker){/*the letter l labeling edge E is in our rack AND l is in the xcheck set of square*/
-                
+
                 //remove a tile l from the rack
                 Tile temp;
                 for(int i=0;i<rack.size();i++){
                     if(rack.at(i).letter==e->first){
-                        temp = rack.at(i); 
+                        temp = rack.at(i);
                         rack.erase(rack.begin()+i);//remove rack[i] from the vector
                         break;
                     }
                 }
                 n=*(e->second);//n=node by following edge e
-                
-                //#next-square = the square to the right of square 
+
+                //#next-square = the square to the right of square
                 int x;
                 vector<Tile> row;
                 if(square.orient==1){
                     x = square.coords.at(0);
-                    row = board.getRow(square.coords.at(1)
+                    row = board.getRow(square.coords.at(1));
                 } else {
                     x = square.coords.at(1);
                     row = board.getRow(square.coords.at(0));
@@ -91,17 +89,17 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Boa
                 Tile nextSquare = row.at(x+1);
                 int tempOrient = nextSquare.orient;
                 nextSquare.orient=square.orient;
-                
+
                 ExtendRight(partialWord.append(e->first),n,nextSquare,rack,board);
                 nextSquare.orient = tempOrient;
                 rack.push_back(temp); //put the tile l back into the rack
-                
-                
+
+
                 /*
                  remove a tile l from the rack
                  n = the node reached by following edge E
                  next-square = the square to the right of square
-                 
+
                  ExtendRight(partialWord+l,N,next-square)
                  put the tile l back into the rack
                  */
@@ -109,13 +107,13 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Boa
         }
     } else {
         // let l be the letter occupying square
-        char l = square.letter; 
+        char l = square.letter;
         if(trie.hasChild(l)){/*N has an edge labeled by l that leads to some node N*/
             int x;
             vector<Tile> row;
             if(square.orient==1){
                 x = square.coords.at(0);
-                row = board.getRow(square.coords.at(1)
+                row = board.getRow(square.coords.at(1));
             } else {
                 x = square.coords.at(1);
                 row = board.getRow(square.coords.at(0));
@@ -139,7 +137,7 @@ void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anc
      *  limit is how many open, non-anchor squares there are to the left of the given anchor.
      *     for finding limit, we might want to add an isAnchor flag to the Tile struct. not sure.
      * RETURNS:
-     *  This doesn't return anything. Everything is going to be done more-or-less inplace. 
+     *  This doesn't return anything. Everything is going to be done more-or-less inplace.
      *  Actual valid output moves are passed through LegalMove()
      */
     ExtendRight(partialWord, n, anchor, rack, board);
@@ -170,13 +168,13 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
      */
     vector<Board> moves;
     string partialWord = findPartial(anchor, board);
-    Trie n = root.traverse(partialword);
+    Trie n = root.traverse(partialWord);
     int limit = findLimit(anchor, board);
     LeftPart(partialWord, n, limit, rack, anchor, board);
     //after this point, LegalMove should have fully populated the legalMoves map above.
     //when converting from the map into a board, also keep track of the score and add it to
     //board.score
-    
+
     return /* convert the legalMoves map into a vector of boards*/NULL;
 }
 
@@ -185,31 +183,31 @@ vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
        returns the top 20 boards based on the boards find moves will return
     */
     vector<Board> best;
-    for (int i = 0; i < moves.size()-1; i++){ 
+    for (int i = 0; i < moves.size()-1; i++){
         for (int j = 0; j < moves.size()-1; i++){
             if (moves.at(i).score > moves.at(i+1).score){
                 Board temp = moves.at(i);
                 moves.at(i) = moves.at(i+1);
-                moves.at(i+1) = temp
+                moves.at(i+1) = temp;
             }
         }
     }
     for (int i= 0; i <20; i++){
         best.push_back(moves.at(i));;
     }
-    return best;  
+    return best;
 }
-   
+
 
 vector<Board> movesGen(Board board, vector<Tile> rack){
-    
+
     //The trie is not global, I need to intialize it here.
     root = getTrie();
-    crossCheck(board);//after this step, we now know the valid "vertical" placements.
+    //crossCheck(board);//after this step, we now know the valid "vertical" placements.
     vector<Tile> anchors = getAnchors(board);
     vector<Board> allMoves;
     for(int i=0;i<anchors.size();i++){
-        vector<board> moves = findMoves(anchors[i], board, rack);
+        vector<Board> moves = findMoves(anchors[i], board, rack);
         for(int j=0;i<moves.size();j++){
             allMoves.push_back(moves[j]);
         }

@@ -89,9 +89,9 @@ int weight(char letter){
     }
     return 0;
 }
-
+/*
 int main (){
     // testing
     char testingLet = 'R';
     cout << "The score value of " << testingLet << " is " << weight(testingLet) << endl;
-}
+}*/
