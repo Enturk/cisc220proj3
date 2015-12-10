@@ -256,11 +256,8 @@ vector<Board> movesGen(Board board, vector<Tile> rack){
     vector<Tile> anchors = getAnchors(board);
     vector<Board> allMoves;
     for(int i=0;i<anchors.size();i++){
-        vector<Board> moves = findMoves(anchors[i], board, rack);
-        for(int j=0;i<moves.size();j++){
-            allMoves.push_back(moves[j]);
-        }
+        allMoves = push_back(findMoves(anchors[i], board, rack));
     }
-    moves = findBest(moves);
+    allMoves = findBest(allMoves);
     return allMoves;
 }

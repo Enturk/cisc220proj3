@@ -31,7 +31,4 @@ int main() {
     for (int i = 0; i < answers.size(); i++){
         cout << answers.at(i); //if riley's overloader works this will print all them out
     }
-    //vector<Board> moves = movesGen(board, rack);
-    // the only thing left to do is sort moves by move.score.
-    //cout << moves[0] << endl;
 }
