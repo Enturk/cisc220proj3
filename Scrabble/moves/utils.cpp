@@ -51,6 +51,10 @@ vector<Tile> getAnchors(Board board){
                 anchors.push_back(board.tiles.at(i));
                 board.tiles.at(i).orient = 2; //vertically
             }
+            if (t.letter == 0 && isalpha(nextTo.letter) && isalpha(below.letter)){
+                anchors.push_back(board.tiles.at(i));
+                board.tiles.at(i).orient = 3; //vertically AND horizontally. special. 
+            }
         }
     }
     
@@ -63,7 +67,7 @@ vector<Tile> getAnchors(Board board){
     for (int i = 0; finalAnchs.size(); i++){
         finalAnchs.at(i).anchor = true;
     }
-    return anchors;
+    return finalAnchs;
 }
 
 string findPartial(Tile anchor, Board board){
@@ -144,3 +148,32 @@ int findLimit(Tile anchor, Board board){
     }
     return limit;
 }
+
+int getScore(string partialWord, Board board, tile endTile){
+        //Josh
+        /* ARGS: partialWord; legal partial word combination formed from rack tiles
+         *       board; current board
+         *       endTile; last tile of the word in question
+         *RETURNS: The score of the playable word
+         */
+        vector<tile> x;
+        int xcoord = endTile.coords.at(0);
+        int ycoord = endTile.coords.at(1);
+        
+        //If the word is horizontally oriented, this is the right-most board letter of the word
+        tile rightEnd = board.getTile(xcoord - partialWord.length(), ycoord); 
+        
+        //If the word is vertically oriented, this is the bottom-most board letter of the word
+        tile bottomEnd = board.getTile(xcoord, ycoord - partialWord.length());
+        
+        //Checks to see if this word is horizontally oriented
+        if(rightEnd.letter != 0){
+            
+        }
+        
+        //Checks to see if this word is horizontally oriented
+        else if(bottomEnd != 0){
+            
+        }
+         
+    }

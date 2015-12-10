@@ -13,6 +13,6 @@ int main() {
     Board board = boardGen();
     vector<Tile> rack = rackGen();
     vector<Board> moves = movesGen(board, rack);
-    // the only thing left to do is sort moves by move.score.
-    //cout << moves[0] << endl;
+    vector<Board> bestmoves = findBest(moves);
+    cout << moves[0] << endl;
 }

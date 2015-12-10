@@ -9,7 +9,7 @@
 using namespace std;
 
 // Nazim
-// will not compile 
+// will compile 
 string findPartial(Tile,Board);
 
 void crossCheck(Tile& tile, Board& board){
@@ -188,7 +188,7 @@ void crossCheck(Tile& tile, Board& board){
     
 };
 
-
+// for testing only; comment out after testing
 int main(){
     
     cout << "censored of fire"<<endl;

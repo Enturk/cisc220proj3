@@ -1,7 +1,6 @@
 #include <iostream>
 #include <sstream>
 #include <bitset>
-//#include weights.cpp
 using namespace std;
 
 struct Tile {
@@ -13,8 +12,8 @@ struct Tile {
     int weight; // letter's score (0 if above is zero)
     int bonus; // bonus on that tile (only if representing an empty spot on the board
     vector<int> coords; // position of tile on board; -1 if in rack
-    bool anchor;
-    int orient;
+    bool anchor; //the tile is an anchor or not
+    int orient; //which orientation the anchor is. 0 default; 1 horizontal; 2 vertical; 3 both 
     bitset<26> xchecks;
     // coords is {0}(one index array of -1) if tile
     // is not on the board.
@@ -61,7 +60,8 @@ struct Board {
          }
          return c;
     }
-
+    
+    
     ostream& operator<<(const Board& board){
         /* This may or may not be working
          * ARGS: const Board& board; an input board
