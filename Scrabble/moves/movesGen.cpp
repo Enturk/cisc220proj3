@@ -12,7 +12,6 @@
  */
 #include <vector>
 #include <map>
-#include <multimap>
 #include "xcheck.cpp"
 #include "utils.cpp"
 #include "../lib/trie.cpp"
