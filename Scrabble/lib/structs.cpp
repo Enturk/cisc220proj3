@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <bitset>
+#include <vector>
 using namespace std;
 
 struct Tile {

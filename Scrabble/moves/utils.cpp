@@ -1,11 +1,11 @@
 #include <iostream>
-#include <string>
+#include <string.h>
 #include <vector>
 #include <bitset>
 #include <map>
 #include <fstream>
+#include "../lib/structs.cpp"
 #include "../lib/trie.cpp"
-
 
 /*
 #ifndef STRUCTS_I
@@ -58,28 +58,68 @@ string findPartial(Tile anchor, Board board){
 void crossCheck(Tile& tile, Board& board){
     /* Need to deal with orientation and other side of the tile
     tile.orient is 1 if just horizontal, 2 if just vertical, 3 if both
+    
+    Scenario 1 passes orient 1 (taken care of automatically)
+    ---
+    -C-
+    -A-
+    -T*
+    ---
+    
+    Scenario 2 passes orient 2 (taken care of automatically)
+    -----
+    -CAT-
+    -*---
+    
+    Scenario 3 passes orient 3 
+    -----
+    -CAR-
+    -A*--
+    -T---
+    -----
     after running partial word horizontally (if necessary) => result 1
     do get col, run findPartial on the right tile => result 2
     loop tile.xchecks to result 1 AND result 2
-    --
-    -C
     */
-  int tempOrient = tile.orient;
+    
   string partialword = findPartial(tile, board);
-  tile.orient = tempOrient;
   int wordLength = partialword.length()+1;
   Trie trie = getTrie();
-  // string bitContainer = "00000000000000000000000000"; // container  (unused)
   string word;
-  string alphabet =     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  bool swingBothWays = false;
+  if (tile.orient == 3){ // scenario 3: first runs in orient 1, then below in orient 2
+      swingBothWays = true; 
+      tile.orient = 1;
+      Tile temp = tile;
+      crossCheck(temp, board);
+      bitset<26> xcheck1 = temp.xchecks;
+      temp.orient = 2;
+      crossCheck(temp, board);
+      bitset<26> xcheck2 = temp.xchecks;
+      tile.xchecks = xcheck1 && xcheck2;
+/*        for (int i = 0; i < 26; i++){
+          word = partialword + alphabet[i];
+          char *y = new char[word.length()+1];
+          strcpy(y, word.c_str());
+          temp.xchecks[i] = trie.hasWord(y, wordLength); // I'm a genius. That's Nazim. He really is.
+          delete[] y;
+        }
+    tile.orient = 2*/
+  } 
   for (int i = 0; i < 26; i++){
       word = partialword + alphabet[i];
-
       char *y = new char[word.length()+1];
       strcpy(y, word.c_str());
       tile.xchecks[i] = trie.hasWord(y, wordLength); // I'm a genius. That's Nazim. He really is.
       delete[] y;
   }
+    /*if (swingBothWays){
+      tile.orient = 3;
+        for (int i = 0; i < 26; i++){
+            tile.xchecks[i] = temp.xchecks[i] && tile.xchecks[i]; //Still more genius.
+        }
+    }*/
 }
 
 vector<Tile> getAnchors(Board board){
