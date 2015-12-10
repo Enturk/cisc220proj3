@@ -86,7 +86,7 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Boa
                 int tempOrient = nextSquare.orient;
                 nextSquare.orient=square.orient;
 
-                ExtendRight(partialWord.append(e->first),n,nextSquare,rack,board);
+                ExtendRight(partialWord+=(e->first),n,nextSquare,rack,board);
                 nextSquare.orient = tempOrient;
                 rack.push_back(temp); //put the tile l back into the rack
 
@@ -104,12 +104,12 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Boa
     } else {
         // let l be the letter occupying square
         char l = square.letter;
-        if(trie.hasChild(l)){/*N has an edge labeled by l that leads to some node N*/
+        if(root.hasChild(l)){/*N has an edge labeled by l that leads to some node N*/
             int x;
             vector<Tile> row;
             if(square.orient==1){
                 x = square.coords.at(0);
-                row = board.getRow(square.coords.at(1);
+                row = board.getRow(square.coords.at(1));
             } else {
                 x = square.coords.at(1);
                 row = board.getRow(square.coords.at(0));
@@ -118,7 +118,7 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Boa
             Tile nextSquare = row.at(x+1);
             int tempOrient = nextSquare.orient;
             nextSquare.orient=square.orient;
-            ExtendRight(partialWord.append(l),*(n.children[l]),nextSquare,rack,board);
+            ExtendRight(partialWord+=l,*(n.children[l]),nextSquare,rack,board);
             nextSquare.orient = tempOrient;
            /*next-square = tile to the right of square
             * ExtendRight(partialWord+l, N, next-square)
@@ -158,7 +158,7 @@ void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anc
                 /*remove a tile labeled l from the rack
                  * let N be the node reached by following edge E
                  */
-                LeftPart(partialWord.append(l),n, limit-1, rack, anchor, board);
+                LeftPart(partialWord+=l,n, limit-1, rack, anchor, board);
                 rack.push_back(temp); //put the tile l back into the rack
                 /*put tile back into rack*/
             }
@@ -182,13 +182,19 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
     int temp;
     if(anchor.orient==3){
         temp = anchor.orient;
+        
         anchor.orient=1;
-        moves.push_back(findMoves(anchor, board, rack));
+        vector<Board> horizMoves = findMoves(anchor, board, rack);
+        moves.insert(moves.end(),horizMoves.begin(),horizMoves.end());
+
         anchor.orient=2;
-        moves.push_back(findMoves(anchor, board, rack));
+        vector<Board> vertMoves = findMoves(anchor, board, rack);
+        moves.insert(moves.end(),vertMoves.begin(),vertMoves.end());
+
         anchor.orient = temp;
         return moves;
     }
+    string partialWord = findPartial(anchor, board);
     Trie n = root.traverse(partialWord);
     int limit = findLimit(anchor, board);
     LeftPart(partialWord, n, limit, rack, anchor, board);
@@ -197,15 +203,16 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
     for(multimap<string,Tile>::iterator it=legalMoves.begin(); it!=legalMoves.end(); ++it){
         Tile tile = it->second;
         string word = it->first;
-        Tile lastTile = outBoard.getTile(tile.coords[0],tile.coords[1]);
-        lastTile.letter = word[word.size()-1]
-
         Board outBoard;
         outBoard.tiles = board.tiles;
+        Tile lastTile = outBoard.getTile(tile.coords[0],tile.coords[1]);
+        lastTile.letter = word[word.size()-1];
+
         if(tile.orient==1){
             int i=0;
             for(string::iterator str=(word.end()-1); str!=word.begin(); --str){
-                outBoard.getTile(tile.coords[0]-i,tile.coords[1]).letter = *str;
+                Tile outTile = outBoard.getTile(tile.coords[0]-i,tile.coords[1]);
+                outTile.letter = *str;
                 //I should probably be keeping track of the score here as well;
                 i++;
             }
@@ -213,8 +220,8 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         if(tile.orient==2){
             int i=0;
             for(string::iterator str=(word.end()-1); str!=word.begin(); --str){
-                outBoard.getTile(tile.coords[0]-i,tile.coords[1]).letter = *str;
-                //I should probably be keeping track of the score here as well;
+                Tile outTile = outBoard.getTile(tile.coords[0],tile.coords[1]-i);
+                outTile.letter = *str;
                 i++;
             }
         }
@@ -256,7 +263,8 @@ vector<Board> movesGen(Board board, vector<Tile> rack){
     vector<Tile> anchors = getAnchors(board);
     vector<Board> allMoves;
     for(int i=0;i<anchors.size();i++){
-        allMoves = push_back(findMoves(anchors[i], board, rack));
+        vector<Board> moves = findMoves(anchors[i],board, rack);
+        allMoves.insert(allMoves.end(),moves.begin(),moves.end());
     }
     allMoves = findBest(allMoves);
     return allMoves;
