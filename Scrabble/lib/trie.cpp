@@ -1,9 +1,9 @@
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <map>
-#include <fstream>
-using namespace std;
+#include "../lib/structs.cpp"
+#include "../lib/weight.cpp";
 //Sam. completed to return all words that can be made by the letters in your rack, including a wildcard
 
 struct Trie {

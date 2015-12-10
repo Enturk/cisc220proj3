@@ -42,7 +42,7 @@ Board boardGen() {
     }
 
     inFile >> x; //skip the first line(the rack)
-    int countY = 0;
+    int countY = ;0
     while(inFile >> x) {
        int countX = 0;
         // This loops through each line of inFile and stores it

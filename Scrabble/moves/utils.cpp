@@ -54,8 +54,13 @@ string findPartial(Tile anchor, Board board){
      }
      return out;
 }
+
 void crossCheck(Tile& tile, Board& board){
+  int tempOrient = tile.orient;
+  if(tile.orient==1)tile.orient=2;
+  if(tile.orient==2)tile.orient=1;
   string partialword = findPartial(tile, board);
+  tile.orient = tempOrient;
   int wordLength = partialword.length()+1;
   Trie trie = getTrie();
   // string bitContainer = "00000000000000000000000000"; // container  (unused)
@@ -105,10 +110,19 @@ vector<Tile> getAnchors(Board board){
             if (t.letter == 0 && isalpha(nextTo.letter) && isalpha(below.letter)){
                 anchors.push_back(board.tiles.at(i));
                 board.tiles.at(i).orient = 3; //vertically AND horizontally. special.
-            }
         }
     }
-
+    //cross checks eberything that is adjacent to a filled tile.
+    for (int i =1; i <14; i++){
+        vector<Tile> row = board.getRow(i);
+        vector<Tile> col = board.getCol(i);
+        if (row.at(i).letter == 0 && (isalpha(row.at(i+1)) || isalpha(row.at(i-1))){
+            crossCheck(row.at(i), board);
+        }
+        if (col.at(i).letter == 0 && (isalpha(col.at(i+1)) || isalpha(rcol.at(i-1))){
+            crossCheck(row.at(i), board);
+        }
+    }
     for (int i = 0; i < anchors.size(); i++){ // runs xcheck on all the anchors
         crossCheck(anchors.at(i),board);
         if ((anchors.at(i).xchecks).count() !=0){ //checks to make sure the bitset isn't trivial (all 0s)
@@ -187,16 +201,22 @@ int getScore(string partialWord, Board board, Tile endTile){
         for(int i = 0; i < partialWord.length(); i++){
             score += weight(partialWord.at(i));
         }
-
+        
+        int tempCoord;
         //Checks to see if this word is horizontally oriented
-        if(rightEnd.letter != 0){ //FIXME: this won't work because it to hit an unrelated tile. We need more data on the word.
-            
+        if(rightEnd.letter != 0){ //FIXME: this won't work because it could just be hitting a random unrelated tile. We need more data on the word.
+            while(rightEnd.coords.at(0) >= 0 && rightEnd.letter !=0){
+                score += weight(rightEnd.letter);
+                tempCoord = rightEnd.coords.at(0)
+                rightEnd = board.getTile(tempCoord - 1);
+            }
         }
 
         //Checks to see if this word is horizontally oriented
         else if(bottomEnd != 0){ //FIXME: same as above check
 
         }
-        //JOSH! Tile stuct--- tile has to be Tile, uppercase. Thank youuuu
+        
+        //Need code here to multiply final score by bonuses
 
     }

@@ -26,7 +26,6 @@ void LegalMove(string partialWord, Tile square){
      *      I've defined multimap<string, tile> legalMoves outside the scope of this function.
      *      It is now global scope and should be accessible from movesGen.
      *      LegalMove should add a record to that map of strings->tiles {string:tile}
-     
      -----
      -----
      -CAT-
