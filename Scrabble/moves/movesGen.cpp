@@ -14,7 +14,7 @@
 using namespace std;
 
 //Trie root;
-multimap<string, vector<Tile> > legalMoves;
+multimap<string,Tile> legalMoves;
 
 void LegalMove(string partialWord, Tile square){
     /*Sam
@@ -179,15 +179,52 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
      *      it should generate the vector of Boards based off of the records of LegalMove.
      */
     vector<Board> moves;
-    string partialWord = findPartial(anchor, board);
+    int temp;
+    if(anchor.orient==3){
+        temp = anchor.orient;
+        anchor.orient=1;
+        moves.push_back(findMoves(anchor, board, rack));
+        anchor.orient=2;
+        moves.push_back(findMoves(anchor, board, rack));
+        anchor.orient = temp;
+        return moves;
+    }
     Trie n = root.traverse(partialWord);
     int limit = findLimit(anchor, board);
     LeftPart(partialWord, n, limit, rack, anchor, board);
     //after this point, LegalMove should have fully populated the legalMoves map above.
     //when converting from the map into a board, also keep track of the score and add it to
-    //board.score
+    for(multimap<string,Tile>::iterator it=legalMoves.begin(); it!=legalMoves.end(); ++it){
+        Tile tile = it->second;
+        string word = it->first;
+        Tile lastTile = outBoard.getTile(tile.coords[0],tile.coords[1]);
+        lastTile.letter = word[word.size()-1]
 
-    return /* convert the legalMoves map into a vector of boards*/NULL;
+        Board outBoard;
+        outBoard.tiles = board.tiles;
+        if(tile.orient==1){
+            int i=0;
+            for(string::iterator str=(word.end()-1); str!=word.begin(); --str){
+                outBoard.getTile(tile.coords[0]-i,tile.coords[1]).letter = *str;
+                //I should probably be keeping track of the score here as well;
+                i++;
+            }
+        }
+        if(tile.orient==2){
+            int i=0;
+            for(string::iterator str=(word.end()-1); str!=word.begin(); --str){
+                outBoard.getTile(tile.coords[0]-i,tile.coords[1]).letter = *str;
+                //I should probably be keeping track of the score here as well;
+                i++;
+            }
+        }
+
+        outBoard.score = getScore(word,board,tile);
+        moves.push_back(outBoard);
+    }
+    
+
+    return moves;
 }
 
 vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
