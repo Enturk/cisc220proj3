@@ -187,8 +187,31 @@ int getScore(string partialWord, Board board, Tile endTile){
          *       endTile; last tile of the word in question
          *RETURNS: The score of the playable word
          */
+
         int score = 0;
         vector<Tile> x;
+        int xcoord = endTile.coords.at(0);
+        int ycoord = endTile.coords.at(1);
+
+        //If the word is horizontally oriented, this is the right-most board letter of the word
+        Tile rightEnd = board.getTile(xcoord - partialWord.length(), ycoord);
+
+        //If the word is vertically oriented, this is the bottom-most board letter of the word
+        Tile bottomEnd = board.getTile(xcoord, ycoord - partialWord.length());
+
+        //Checks to see if this word is horizontally oriented
+        if(rightEnd.letter != 0){ //FIXME: this won't work because it to hit an unrelated tile. We need more data on the word.
+            for(int i = 0; i < partialWord.length(); i++){
+                score += weight(partialWord.at(i));
+            }
+        }
+
+        //Checks to see if this word is horizontally oriented
+        else if(bottomEnd != 0){ //FIXME: same as above check
+
+        }
+
+    }
         int xcoord = endTile.coords.at(0);
         int ycoord = endTile.coords.at(1);
 

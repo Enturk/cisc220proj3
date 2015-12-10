@@ -4,39 +4,41 @@
 #include <vector>
 #include "../lib/structs.cpp"
 #include "../lib/weight.cpp";
+#include <fstream>
+using namespace std;
 //Sam. completed to return all words that can be made by the letters in your rack, including a wildcard
 
 struct Trie {
     map<char, Trie*> children;
     bool isEOW;
-    
+
     bool hasChild(char key){
         map<char, Trie*>::iterator result = children.find(key);
-        return result != children.end();      
+        return result != children.end();
     }
 
     bool hasWord(char* input, int length){
         if (length == 0){
             return isEOW;
         }
-        
+
         if (!hasChild(input[0])){
             return false;
         }
-        
+
         return (children[input[0]])->hasWord(input+1, length-1);
     }
-    
+
     void printAll(const string& prefix){
         if (isEOW){
             cout << prefix << endl;
         }
-        
+
         for(map<char, Trie*>::iterator it = children.begin(); it != children.end(); it++){
             it->second->printAll(prefix + it->first);
         }
     }
-    
+
     void getAllWords(const string& prefix, vector<string>& results){
         if (isEOW){
             results.push_back(prefix);
@@ -45,33 +47,33 @@ struct Trie {
         for(map<char, Trie*>::iterator it = children.begin(); it != children.end(); it++){
             it->second->getAllWords(prefix + it->first, results); //this "it->second" refers to the Trie the iterator is operating on
             //it->first is the char here
-            
-            
+
+
         }
     }
-    
+
     Trie traverse(string str){
         //Sam
         /*ARGS: str; string that we want to travel to in the trie
           RETURNS: Trie; the literal node that the str stops on
-          
+
           This essentially crops a trie up to the input string.
           So if we had the string STO,
           traverse should travel along the S child to that node,
-          then the T child of that node, then the O child 
+          then the T child of that node, then the O child
           */
         string next = str.substr(1,str.size()-1);
         for (map<char, Trie*>::iterator it = children.begin(); it!= children.end(); it++){
             if (str.size()==1){
                 return *(it->second);
             }
-            
+
             if (it->first == str[0]){
                 it->second->traverse(next);
             }
         }
     }
-    
+
     void getRackWords(const string& prefix, map<char, int>& rack, vector<string>& results){
         if (isEOW){
             results.push_back(prefix);
@@ -92,13 +94,13 @@ struct Trie {
             }
         }
     }
-    
+
     void insert(char* input, int length){
         if (length == 0){
             isEOW = true;
             return;
         }
-        
+
         if (!hasChild(input[0])){
             Trie* newTrie = new Trie();
             children[input[0]] = newTrie;
@@ -106,8 +108,8 @@ struct Trie {
 
         (children[input[0]])->insert(input+1, length-1);
     }
-    
-    
+
+
     Trie(){
         isEOW = false;
     }
@@ -118,7 +120,7 @@ Trie getTrie() {
     if(init)return root;
     string temp = "";
     vector<string> results;
-    string line; 
+    string line;
     ifstream dict("dictionary.txt"); //opens it
     if (dict.is_open()){
         while (getline(dict, line)){
@@ -147,7 +149,7 @@ Trie getTrie() {
      This needs to be part of the trie itself.
         args: string partialWord. the string we want to travel up to
      * returns: a Node object, a piece of the trie with labeled edges and an acceptState boolean
-     
+
 }*/
 
 //we also need a way of getting all possible letters from a given node
