@@ -2,8 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "../lib/structs.cpp"
-#include "../lib/weight.cpp"
+#include "./moves/movesGen.cpp"
 using namespace std;
 
 /* Input data consumer functions
@@ -42,7 +41,7 @@ Board boardGen() {
     }
 
     inFile >> x; //skip the first line(the rack)
-    int countY = ;0
+    int countY = 0;
     while(inFile >> x) {
        int countX = 0;
         // This loops through each line of inFile and stores it

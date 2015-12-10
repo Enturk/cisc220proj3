@@ -61,10 +61,10 @@ void crossCheck(Tile& tile, Board& board){
     after running partial word horizontally (if necessary) => result 1
     do get col, run findPartial on the right tile => result 2
     loop tile.xchecks to result 1 AND result 2
+    --
+    -C
     */
   int tempOrient = tile.orient;
-  if(tile.orient==1)tile.orient=2;
-  if(tile.orient==2)tile.orient=1;
   string partialword = findPartial(tile, board);
   tile.orient = tempOrient;
   int wordLength = partialword.length()+1;
@@ -250,13 +250,6 @@ int getScore(string partialWord, Board board, Tile endTile){
                     below = tempBoard.getTile(above.coords.at(0), above.coords.at(1) + 1);
                 }
             }
-            
-            boardTile = board.getTile(xcoord - partialWord.length(), ycoord);
-            while(boardTile.coords.at(0) >= 0 && rightEnd.letter !=0){
-                score += weight(boardTile.letter);
-                tempCoord = boardTile.coords.at(0);
-                boardTile = board.getTile(tempCoord - 1, ycoord);
-            }
         }
         
         
@@ -302,7 +295,6 @@ int getScore(string partialWord, Board board, Tile endTile){
                     right = tempBoard.getTile(right.coords.at(0) + 1, right.coords.at(1));
                 }
             }
-                
         }
         
         if(doubleWord > 0){
