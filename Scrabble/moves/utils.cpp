@@ -199,26 +199,59 @@ int getScore(string partialWord, Board board, Tile endTile){
          *       endTile; last tile of the word in question
          *RETURNS: The score of the playable word
          */
-
+        Board tempBoard = new Board;
+        tempBoard = board;
+        int x = endTile.coords.at(0);
+        int y = endTile.coords.at(1);
         int score = 0;
         int doubleWord = 0;
         int tripleWord = 0;
         int length = partialWord.length();
-        int xcoord = endTile.coords.at(0);
-        int ycoord = endTile.coords.at(1);
-        int tempCoord;
-        Tile boardTile;
-        Tile tempTile;
-        
+
         //Word is horizontally oriented
         if (endTile.orient = 1){
-            while(endTile.coords.at(0) >= 0 && endTile.letter != 0){
-                if(endTile.bonus == 2 || endTile.bonus == 3){
+            //Places tiles onto a temporary side board in order to compute values of all
+            //letters in the board in place
+            for(int i = length; i >= 0; i--){
+                tempBoard.tiles.at(15*y + x).letter = partialWord.at(i);
+                x -= 1; 
+            }
+            //Computes the score of each letter including double and triple letter bonuses
+            //Double and triple word bonuses are stored for later computation
+            for(int i = 0; i < length; i++){
+                if(endTile.bonus == 0){
+                    score += weight(endTile.letter);
+                }else if(endTile.bonus == 2 || endTile.bonus == 3){
                     score += (weight(endTile.letter)*endTile.bonus);
+                }else if(endTile.bonus == 4){
+                    score += weight(endTile.letter);
+                    doubleWord += 1;
+                }else if(endTile.bonus == 9){
+                    score += weight(endTile.letter);
+                    tripleWord += 1;
                 }
-                if(en)
-                tempCoord = boardTile.coords.at(0);
-                boardTile = board.getTile(tempCoord - 1, ycoord);
+                //Move endTile over by 1 to the left
+                endTile.coords.at(0) = tempBoard.getTile(endTile.coords.at(0)-1, y);
+            }
+                
+            //adds score of adjacent connected letters above each letter in the word to the total score
+            Tile above = tempBoard.getTile(endTile.coords.at(0), endTile.coords.at(1)-1);
+            if(above.letter != 0){
+                while(above.coords.at(1) >= 0 && above.letter != 0){
+                    score += weight(above.letter);
+                    above = tempBoard.getTile(above.coords.at(0), above.coords.at(1) - 1);
+                }
+            }
+                
+            Tile below = tempBoard.getTile(endTile.coords.at(0), endTile.coords.at(1)+1);
+            if(below.letter != 0){
+                while(below.coords.at(1) <= 15 && below.letter != 0){
+                    score += weight(below.letter);
+                    below = tempBoard.getTile(above.coords.at(0), above.coords.at(1) + 1);
+                }
+            }
+                
+                
             }
             
             boardTile = board.getTile(xcoord - partialWord.length(), ycoord);
@@ -229,18 +262,58 @@ int getScore(string partialWord, Board board, Tile endTile){
             }
         }
         
-        /*
-        //Word is vertically oriented
-        else if (endTile.orient = 2){
-            boardTile = board.getTile(xcoord, ycoord - partialWord.length());
-            while(bottomEnd.coords.at(1) >= 0 && bottomEnd.letter !=0){
-                score += weight(bottomEnd.letter);
-                tempCoord = bottomEnd.coords.at(1);
-                bottomEnd = board.getTile(xcoord, tempCoord - 1);
-            }
-        }
-        */
         
-        //Need code here to multiply final score by bonuses
-
+        //Word is vertically oriented 
+        else if (endTile.orient = 1){
+            //Places tiles onto a temporary side board in order to compute values of all
+            //letters in the board in place
+            for(int i = length; i >= 0; i--){
+                tempBoard.tiles.at(15*y + x).letter = partialWord.at(i);
+                y -= 1; 
+            }
+            //Computes the score of each letter including double and triple letter bonuses
+            //Double and triple word bonuses are stored for later computation
+            for(int i = 0; i < length; i++){
+                if(endTile.bonus == 0){
+                    score += weight(endTile.letter);
+                }else if(endTile.bonus == 2 || endTile.bonus == 3){
+                    score += (weight(endTile.letter)*endTile.bonus);
+                }else if(endTile.bonus == 4){
+                    score += weight(endTile.letter);
+                    doubleWord += 1;
+                }else if(endTile.bonus == 9){
+                    score += weight(endTile.letter);
+                    tripleWord += 1;
+                }
+                //Move endTile over by 1 up
+                endTile.coords.at(0) = tempBoard.getTile(x, endTile.coords.at(1)-1);
+            }
+                
+                
+            Tile left = tempBoard.getTile(x - 1, endTile.coords.at(1));
+            if(left.letter != 0){
+                while(left.coords.at(0) >= 0 && left.letter != 0){
+                    score += weight(left.letter);
+                    left = tempBoard.getTile(left.coords.at(0) - 1, left.coords.at(1));
+                }
+            }
+                
+            Tile right = tempBoard.getTile(x + 1, endTile.coords.at(1));
+            if(right.letter != 0){
+                while(below.coords.at(0) <= 15 && right.letter != 0){
+                    score += weight(right.letter);
+                    right = tempBoard.getTile(right.coords.at(0) + 1, right.coords.at(1));
+                }
+            }
+                
+        }
+        
+        if(doubleWord > 0){
+            score = score*2*doubleWord;
+        }
+        if(tripleWord > 0)
+            score = score*3*tripleWord;
+        }
+        return score;
+        
     }
