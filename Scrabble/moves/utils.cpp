@@ -1,8 +1,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <bitset>
 #include <map>
 #include <fstream>
+#include "../lib/trie.cpp"
+
 
 /*
 #ifndef STRUCTS_I
@@ -16,7 +19,57 @@
 */
 using namespace std;
 
-void crossCheck(Tile&, Board&);
+string findPartial(Tile anchor, Board board){
+    /* -rlyshw. this is finished. needs testing
+    I think this should be done on rows of tiles, not the entire board. this
+     * way we understand the orientation we are working with.
+     * In this case, row is a generic list of Tiles, could be either vertical
+     * or horizontal
+     * args: Tile anchor; the anchor from which we are computing
+     *       Board board; the actual board object
+     * RETURNS: the string of the prefix to the left(or above) of anchor, only from tiles that are already on the board
+     * I'm going to assume the input is the row
+     */
+
+     int dir = anchor.orient;
+
+     //if dir is horiz and x=0 or dir is vert and y is zero, return empty string.
+     if((dir==1 && anchor.coords.at(0)==0) || (dir==2 && anchor.coords.at(1)==0)) return "";
+
+     vector<Tile> row; //the 'row' we are looking at
+     int x; //the pos of the anchor
+     if(dir==1){ //we going horizontally
+         x = anchor.coords.at(0);
+         row = board.getRow(anchor.coords.at(1));
+     }
+     else{ // we going vertically
+         x = anchor.coords.at(1);
+         row = board.getCol(anchor.coords.at(0));
+     }
+     int i=x;
+     string out;
+     for(i;row.at(i-1).letter!=0&&i>0;i--);//
+     for(i;i<x;i++){
+        out.append(string(1,row.at(i).letter));
+     }
+     return out;
+}
+void crossCheck(Tile& tile, Board& board){
+  string partialword = findPartial(tile, board);
+  int wordLength = partialword.length()+1;
+  Trie trie = getTrie();
+  // string bitContainer = "00000000000000000000000000"; // container  (unused)
+  string word;
+  string alphabet =     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for (int i = 0; i < 26; i++){
+      word = partialword + alphabet[i];
+
+      char *y = new char[word.length()+1];
+      strcpy(y, word.c_str());
+      tile.xchecks[i] = trie.hasWord(y, wordLength); // I'm a genius. That's Nazim. He really is.
+      delete[] y;
+  }
+}
 
 vector<Tile> getAnchors(Board board){
     //Sam-complete, needs testing
@@ -25,12 +78,10 @@ vector<Tile> getAnchors(Board board){
      * anchors are defined as the leftmost empty tiles adjacent to already placed tiles with non-trivial xchecks.
      * That is; they are the blank spots to the left of words already on the board(tile.letter==0)
      * and they have non-trivial crosschecks(there is at least one '1' in tile.xchecks
-     *
      * once we decide a tile is an anchor, run xcheck on it.
-     *
      * Anchors should mark the tile as such. Tile.anchor = true;
      *   Anchors should also be denoted as a row or a col anchor.
-            do this by setting tile.orient = 0, or 1, 2;
+            do this by setting tile.orient = 0, or 1, 2, 3;
             tiles should default to 0.
             1 means horizontal. 2 means vertical.
             I need to know this to know which direction to compute the partialWord.
@@ -38,7 +89,7 @@ vector<Tile> getAnchors(Board board){
      */
     vector<Tile> anchors;
     vector<Tile> finalAnchs;
-    for (int i = 0; i< 15; i++){ //rows
+    for (int i = 0; i< 14; i++){ //rows
         for (int j = 0; j < 14; j++){ // has to go only to 14 because we do j+1 //cols
             Tile t = board.getTile(i,j);
             Tile nextTo = board.getTile(i+1, j); //to its left
@@ -53,11 +104,11 @@ vector<Tile> getAnchors(Board board){
             }
             if (t.letter == 0 && isalpha(nextTo.letter) && isalpha(below.letter)){
                 anchors.push_back(board.tiles.at(i));
-                board.tiles.at(i).orient = 3; //vertically AND horizontally. special. 
+                board.tiles.at(i).orient = 3; //vertically AND horizontally. special.
             }
         }
     }
-    
+
     for (int i = 0; i < anchors.size(); i++){ // runs xcheck on all the anchors
         crossCheck(anchors.at(i),board);
         if ((anchors.at(i).xchecks).count() !=0){ //checks to make sure the bitset isn't trivial (all 0s)
@@ -70,41 +121,7 @@ vector<Tile> getAnchors(Board board){
     return finalAnchs;
 }
 
-string findPartial(Tile anchor, Board board){
-    /* -rlyshw. this is finished. needs testing
-    I think this should be done on rows of tiles, not the entire board. this
-     * way we understand the orientation we are working with.
-     * In this case, row is a generic list of Tiles, could be either vertical
-     * or horizontal
-     * args: Tile anchor; the anchor from which we are computing
-     *       Board board; the actual board object
-     * RETURNS: the string of the prefix to the left(or above) of anchor, only from tiles that are already on the board
-     * I'm going to assume the input is the row
-     */
-     
-     int dir = anchor.orient;
-    
-     //if dir is horiz and x=0 or dir is vert and y is zero, return empty string.
-     if((dir==1 && anchor.coords.at(0)==0) || (dir==2 && anchor.coords.at(1)==0)) return "";
-     
-     vector<Tile> row; //the 'row' we are looking at
-     int x; //the pos of the anchor
-     if(dir==1){ //we going horizontally
-         x = anchor.coords.at(0);
-         row = board.getRow(anchor.coords.at(1));
-     }
-     else{ // we going vertically
-         x = anchor.coords.at(1);
-         row = board.getCol(anchor.coords.at(0));
-     } 
-     int i=x;
-     string out;
-     for(i;row.at(i-1).letter!=0&&i>0;i--);//
-     for(i;i<x;i++){
-        out.append(string(1,row.at(i).letter));
-     }
-     return out;
-}
+
 
 int findLimit(Tile anchor, Board board){
     //Sam--complete, needs testing
@@ -149,31 +166,37 @@ int findLimit(Tile anchor, Board board){
     return limit;
 }
 
-int getScore(string partialWord, Board board, tile endTile){
+int getScore(string partialWord, Board board, Tile endTile){
         //Josh
         /* ARGS: partialWord; legal partial word combination formed from rack tiles
          *       board; current board
          *       endTile; last tile of the word in question
          *RETURNS: The score of the playable word
          */
-        vector<tile> x;
+        int score = 0;
+        vector<Tile> x;
         int xcoord = endTile.coords.at(0);
         int ycoord = endTile.coords.at(1);
-        
+
         //If the word is horizontally oriented, this is the right-most board letter of the word
-        tile rightEnd = board.getTile(xcoord - partialWord.length(), ycoord); 
-        
+        Tile rightEnd = board.getTile(xcoord - partialWord.length(), ycoord);
+
         //If the word is vertically oriented, this is the bottom-most board letter of the word
-        tile bottomEnd = board.getTile(xcoord, ycoord - partialWord.length());
+        Tile bottomEnd = board.getTile(xcoord, ycoord - partialWord.length());
         
+        for(int i = 0; i < partialWord.length(); i++){
+            score += weight(partialWord.at(i));
+        }
+
         //Checks to see if this word is horizontally oriented
-        if(rightEnd.letter != 0){
+        if(rightEnd.letter != 0){ //FIXME: this won't work because it to hit an unrelated tile. We need more data on the word.
             
         }
-        
+
         //Checks to see if this word is horizontally oriented
-        else if(bottomEnd != 0){
-            
+        else if(bottomEnd != 0){ //FIXME: same as above check
+
         }
-         
+        //JOSH! Tile stuct--- tile has to be Tile, uppercase. Thank youuuu
+
     }

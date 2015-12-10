@@ -10,14 +10,10 @@
  * If this function becomes too monolithic, steps 4+5 can
  * be extracted to their own functions
  */
-#include <vector>
-#include <map>
-#include "xcheck.cpp"
 #include "utils.cpp"
-#include "../lib/trie.cpp"
 using namespace std;
 
-Trie root;
+//Trie root; - i dont think this is neccesary, causes redifintion issues.
 multimap<string, vector<Tile>> legalMoves;
 
 void LegalMove(string partialWord, Tile square){
@@ -51,14 +47,14 @@ void LegalMove(string partialWord, Tile square){
 void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Board board){
     if(square.letter == 0){
         if(n.isEOW){ //if n is a terminal node
-            LegalMove(partialWord,square)//I'm pretty sure the square will be the position of the last letter
+            LegalMove(partialWord,square); //I'm pretty sure the square will be the position of the last letter
         }
         for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge e out of n*/
             bool LinRack = false; // l is in rack
             for(int i=0;i<rack.size();i++){
                 LinRack = rack.at(i).letter==e->first;
             }
-            bool xchecker = square.xchecks[((int)(e->first))-64]
+            bool xchecker = square.xchecks[((int)(e->first))-64];
             if(LinRack && xchecker){/*the letter l labeling edge E is in our rack AND l is in the xcheck set of square*/
                 
                 //remove a tile l from the rack
@@ -77,7 +73,7 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Boa
                 vector<Tile> row;
                 if(square.orient==1){
                     x = square.coords.at(0);
-                    row = board.getRow(square.coords.at(1)
+                    row = board.getRow(square.coords.at(1));
                 } else {
                     x = square.coords.at(1);
                     row = board.getRow(square.coords.at(0));
@@ -114,7 +110,7 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Boa
             vector<Tile> row;
             if(square.orient==1){
                 x = square.coords.at(0);
-                row = board.getRow(square.coords.at(1)
+                row = board.getRow(square.coords.at(1);
             } else {
                 x = square.coords.at(1);
                 row = board.getRow(square.coords.at(0));
@@ -169,7 +165,7 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
      */
     vector<Board> moves;
     string partialWord = findPartial(anchor, board);
-    Trie n = root.traverse(partialword);
+    Trie n = root.traverse(partialWord);
     int limit = findLimit(anchor, board);
     LeftPart(partialWord, n, limit, rack, anchor, board);
     //after this point, LegalMove should have fully populated the legalMoves map above.
@@ -189,7 +185,7 @@ vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
             if (moves.at(i).score > moves.at(i+1).score){
                 Board temp = moves.at(i);
                 moves.at(i) = moves.at(i+1);
-                moves.at(i+1) = temp
+                moves.at(i+1) = temp;
             }
         }
     }
@@ -201,17 +197,18 @@ vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
    
 
 vector<Board> movesGen(Board board, vector<Tile> rack){
-    
+    //I believe this should call everything and return the best moves, which are instances of the board will a play on them
     //The trie is not global, I need to intialize it here.
     root = getTrie();
-    crossCheck(board);//after this step, we now know the valid "vertical" placements.
+    //crossCheck(board);//after this step, we now know the valid "vertical" placements.
     vector<Tile> anchors = getAnchors(board);
     vector<Board> allMoves;
     for(int i=0;i<anchors.size();i++){
-        vector<board> moves = findMoves(anchors[i], board, rack);
+        vector<Board> moves = findMoves(anchors[i], board, rack);
         for(int j=0;i<moves.size();j++){
             allMoves.push_back(moves[j]);
         }
     }
+    moves = findBest(moves);
     return allMoves;
 }

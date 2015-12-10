@@ -13,7 +13,7 @@ struct Tile {
     int bonus; // bonus on that tile (only if representing an empty spot on the board
     vector<int> coords; // position of tile on board; -1 if in rack
     bool anchor; //the tile is an anchor or not
-    int orient; //which orientation the anchor is. 0 default; 1 horizontal; 2 vertical; 3 both 
+    int orient; //which orientation the anchor is. 0 default; 1 horizontal; 2 vertical; 3 both
     bitset<26> xchecks;
     // coords is {0}(one index array of -1) if tile
     // is not on the board.
@@ -34,7 +34,7 @@ struct Board {
     // the board has a one dimensional array of Tiles
     vector<Tile> tiles;
     int score; //boards are only scored if we have put a move onto it
-   
+
     Tile getTile(int col, int row){
         //the index of a tile with coordinates of (x,y) in the 2D array is (15*x)+y.
         return tiles[15*row + col];
@@ -60,8 +60,8 @@ struct Board {
          }
          return c;
     }
-    
-    
+
+
     ostream& operator<<(const Board& board){
         /* This may or may not be working
          * ARGS: const Board& board; an input board
