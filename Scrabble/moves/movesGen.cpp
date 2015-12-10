@@ -139,11 +139,27 @@ void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anc
     ExtendRight(partialWord, n, anchor, rack, board);
     if(limit>0){
         for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge E out of n*/
-            if(0/*the letter l labeling edge E*/){
+            bool LinRack = false; // l is in rack
+            for(int i=0;i<rack.size();i++){
+                LinRack = rack.at(i).letter==e->first;
+            }
+            if(LinRack){/*the letter l labeling edge E is in our rack*/
+                char l = e->first;
+                //remove a tile l from the rack
+                Tile temp;
+                for(int i=0;i<rack.size();i++){
+                    if(rack.at(i).letter==e->first){
+                        temp = rack.at(i);
+                        rack.erase(rack.begin()+i);//remove rack[i] from the vector
+                        break;
+                    }
+                }
+                n=*(e->second);//n=node by following edge e
                 /*remove a tile labeled l from the rack
                  * let N be the node reached by following edge E
                  */
-                LeftPart(partialWord+l,N, limit-1);
+                LeftPart(partialWord.append(l),n, limit-1, rack, anchor, board);
+                rack.push_back(temp); //put the tile l back into the rack
                 /*put tile back into rack*/
             }
         }
