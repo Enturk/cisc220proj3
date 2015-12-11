@@ -319,7 +319,6 @@ int getScore(string partialWord, Board board, Tile end){
         if(rackUsed == 7){
             score += 50;
         }
-        cout << "score: " << score << endl;
         return score;
         
     }

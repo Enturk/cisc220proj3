@@ -211,9 +211,9 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         string word = it->first;
         Board outBoard;
         outBoard.tiles = board.tiles;
-        cout << tile.coords.at(0) <<","<< tile.coords.at(1)<<endl;
         Tile lastTile = outBoard.getTile(tile.coords.at(0),tile.coords.at(1));
         lastTile.letter = word[word.size()-1];
+        outBoard.print();
         if(tile.orient==1){
             int i=0;
             for(string::iterator str=(word.end()-1); str!=word.begin(); --str){
@@ -243,22 +243,8 @@ vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
        returns the top 20 boards based on the boards find moves will return
     */
     vector<Board> best;
-    int i = 0;
-    int temp = 0;
-    int dist = 0;
-
-    for (dist = moves.size()/2; dist > 0; dist /= 2){
-        for (i = dist; i < moves.size(); i++){
-          for (int j = i-dist; j > -1 && moves.at(j) > moves.at(j+dist); j -= dist){
-            if (moves.at(j) > moves.at(j+ dist)){
-              temp = moves.at(j+dist);
-              moves.at(j+dist) = moves.at(j);
-              moves.at(j) = temp;
-            }
-          }
-        }
-      }
-    /*for (int i = 0; i < moves.size()-1; i++){
+    
+    for (int i = 0; i < moves.size(); i++){
         for (int j = 0; j < moves.size()-1; j++){
             if (moves.at(j).score < moves.at(j+1).score){
                 Board temp = moves.at(j);
@@ -266,7 +252,7 @@ vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
                 moves.at(j+1) = temp;
             }
         }
-    }*/
+    }
     for (int i= 0; i < 20; i++){
         best.insert(best.end(), moves.begin(),moves.end());
     }
