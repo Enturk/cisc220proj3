@@ -214,7 +214,6 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         outBoard.tiles = board.tiles;
         Tile lastTile = outBoard.getTile(tile.coords.at(0),tile.coords.at(1));
         lastTile.letter = word[word.size()-1];
-        cout << "definitions complete, line 221,"<<tile.orient<<endl;
         if(tile.orient==1){
             int i=0;
             for(string::iterator str=(word.end()-1); str!=word.begin(); --str){
@@ -226,17 +225,13 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         }
         if(tile.orient==2){
             int i=0;
-            cout << "pre string iteration" << endl;
             for(string::iterator str=(word.end()-1); str!=word.begin(); --str){
                 Tile outTile = outBoard.getTile(tile.coords[0],tile.coords[1]-i);
                 outTile.letter = *str;
                 i++;
             }
-            cout << "post string iteration"<<endl;
         }
-        cout << "pre getscore"<<endl;
         outBoard.score = getScore(word,board,tile);
-        cout << "post getscore"<<endl;
         moves.push_back(outBoard);
     }
     
@@ -250,16 +245,16 @@ vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
     */
     vector<Board> best;
     for (int i = 0; i < moves.size()-1; i++){
-        for (int j = 0; j < moves.size()-1; i++){
-            if (moves.at(i).score > moves.at(i+1).score){
-                Board temp = moves.at(i);
-                moves.at(i) = moves.at(i+1);
-                moves.at(i+1) = temp;
+        for (int j = 0; j < moves.size()-1; j++){
+            if (moves.at(j).score > moves.at(j+1).score){
+                Board temp = moves.at(j);
+                moves.at(j) = moves.at(j+1);
+                moves.at(j+1) = temp;
             }
         }
     }
-    for (int i= 0; i <20; i++){
-        best.push_back(moves.at(i));;
+    for (int i= 0; i < 20; i++){
+        best.insert(best.end(), moves.begin(),moves.end());
     }
     return best;
 }
@@ -272,7 +267,7 @@ vector<Board> movesGen(Board board, vector<Tile> rack){
     //crossCheck(board);//after this step, we now know the valid "vertical" placements.
     vector<Tile> anchors = getAnchors(board);
     vector<Board> allMoves;
-    cout <<"We will now test all of the anchors..."<<endl;
+    //cout <<"We will now test all of the anchors..."<<endl;
     for(int i=0;i<anchors.size();i++){
         cout << "Trying to findMoves for "<<anchors[i].coords[0]<<","<<anchors[i].coords[1]<<endl;
         vector<Board> moves = findMoves(anchors[i],board, rack);

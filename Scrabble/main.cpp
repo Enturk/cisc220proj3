@@ -9,13 +9,14 @@
 int main() {
     Board board = boardGen();
     cout << "This is the board loaded from the file:" << endl;
-    // showboard(board);
+   // board.print();
     
     vector<Tile> rack = rackGen();
     vector<Board> answers;
     answers = movesGen(board, rack); //returns a vector of boards... we need to then display them.
-    for (int i = 0; i < answers.size(); i++){
-        // allow user to select a legal move and add it to the board
-        // cout the board again with showboard(board)
+    for (int i = 0; i < 20; i++){
+        cout << answers.at(i).score << endl;
+        answers.at(i).print();
+        cout << endl;
     }
 }

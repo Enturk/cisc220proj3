@@ -85,17 +85,21 @@ struct Board {
     void print(){
         //Nazim
         bool spaced = true; // FIXME set to false before turning in. True inserts spaces for the sake of legibility
-        Tile temp = getTile(0,0);
-        if (spaced) cout << "  1 2 3 4 5 6 7 8 9101112131415";
+        // debugging bools
+        // bool printAnchors = false;
+        Tile temp = this->getTile(0,0);
+        if (spaced) cout << "  1 2 3 4 5 6 7 8 9 0 1 2 3 4 5";
         else cout << "  123456789012345";
+        cout << endl;
         for (int y = 0; y < 15; y++){
             cout << y+1;
-            if (y!>8) cout << " "; // spacer to keep things even
+            if (!(y>8)) cout << " "; // spacer to keep things even
             for (int x = 0; x < 15; x++){
-                temp = board.getTile(y , x);
-                if (temp.letter != '0') cout << temp.letter;
-                else if (temp.bonus > 0) cout << temp.bonus;
-                else cout << '-';
+                temp = this->getTile(x, y);
+                if (temp.letter != 0){cout << temp.letter;}
+                //else if (printAnchors && temp.anchor) {cout << temp.orient;}
+                else if (temp.bonus != 0) {cout << temp.bonus;}
+                else {cout << '-';}
                 if (spaced) cout << " ";
             }
         cout << endl;

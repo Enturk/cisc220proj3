@@ -72,7 +72,7 @@ void crossCheck(Tile& tile, Board& board){
   
   reverse(row.begin(),row.end());
   tile.coords.at(tile.orient-1)=14-tile.coords.at(tile.orient-1);
-  cout << "xcheck at ("<<tile.coords[0]<<","<<tile.coords[1]<<");"<<tile.orient<<": "<<leftSide<<"_"<<rightSide<<endl;
+  //cout << "xcheck at ("<<tile.coords[0]<<","<<tile.coords[1]<<");"<<tile.orient<<": "<<leftSide<<"_"<<rightSide<<endl;
   int wordLength = leftSide.length()+1+rightSide.length();
   bitset<26> old = tile.xchecks;
   for (int i = 0; i < 26; i++){
@@ -164,7 +164,7 @@ vector<Tile> getAnchors(Board board){
     for (int i = 0; i<finalAnchs.size(); i++){
         finalAnchs.at(i).anchor = true;
     }
-    cout << "anchors size: " << finalAnchs.size() << endl;
+    //cout << "anchors size: " << finalAnchs.size() << endl;
     return finalAnchs;
 }
 
@@ -211,20 +211,18 @@ int getScore(string partialWord, Board board, Tile end){
         int rackUsed = 0;
         int length = partialWord.length();
         
-        cout << "getScore starts" << endl;
+        
         //Word is horizontally oriented
         if (endTile.orient == 1){
-            cout << "Word is horizontally oriented" << endl;
             //Places tiles onto a temporary side board in order to compute values of all
             //letters in the board in place
-            for(int i = length; i >= 0; i--){
-                if(tempBoard.tiles.at(15*y + x).letter == 0){
+            for(int i = length-1; i >= 0; i--){
+                if(tempBoard.getTile(x, y).letter == 0){
                     rackUsed += 1;
                 }
-                tempBoard.tiles.at(15*y + x).letter = partialWord.at(i);
+                tempBoard.getTile(x, y).letter = partialWord.at(i);
                 x -= 1;
             }
-            cout << "temporary board is created" << endl;
             //Computes the score of each letter including double and triple letter bonuses
             //Double and triple word bonuses are stored for later computation
             for(int i = 0; i < length; i++){
@@ -242,7 +240,7 @@ int getScore(string partialWord, Board board, Tile end){
                 //Move endTile over by 1 to the left
                 endTile = tempBoard.getTile(endTile.coords.at(0)-1, y);
             }
-            cout << "scores of tiles plus double letters and triple letters computed" << endl;
+            
                 
             //adds score of adjacent connected letters above each letter in the word to the total score
             Tile above = tempBoard.getTile(endTile.coords.at(0), endTile.coords.at(1)-1);
@@ -265,14 +263,17 @@ int getScore(string partialWord, Board board, Tile end){
         
         //Word is vertically oriented 
         else if (endTile.orient == 2){
-            cout << "Word is vertically oriented" << endl;
+            
             //Places tiles onto a temporary side board in order to compute values of all
             //letters in the board in place
-            for(int i = length; i >= 0; i--){
-                tempBoard.tiles.at(15*y + x).letter = partialWord.at(i);
+            for(int i = length-1; i > 0; i--){
+                if(tempBoard.getTile(x, y).letter == 0){
+                    rackUsed += 1;
+                }                
+                tempBoard.getTile(x,y).letter = partialWord.at(i);
                 y -= 1; 
             }
-            cout << "temporary board is created" << endl;
+            
             //Computes the score of each letter including double and triple letter bonuses
             //Double and triple word bonuses are stored for later computation
             for(int i = 0; i < length; i++){
