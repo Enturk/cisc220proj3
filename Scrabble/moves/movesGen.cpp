@@ -13,7 +13,6 @@
 #include "utils.cpp"
 using namespace std;
 
-//Trie root;
 multimap<string,Tile> legalMoves;
 
 void LegalMove(string partialWord, Tile square){
@@ -136,6 +135,7 @@ void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anc
      *  This doesn't return anything. Everything is going to be done more-or-less inplace.
      *  Actual valid output moves are passed through LegalMove()
      */
+     cout << "entered left part"<<endl;
     ExtendRight(partialWord, n, anchor, rack, board);
     if(limit>0){
         for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge E out of n*/
@@ -202,10 +202,12 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
     }
     string partialWord = findPartial(anchor,row);
     cout << "left of "<<anchor.coords[0]<<","<<anchor.coords[1]<<" "<<partialWord << endl;
-    Trie n = root.traverse(partialWord);
+    string str(partialWord);
+    Trie n = root.traverse(str);
     int limit = findLimit(anchor, row);
-    cout << partialWord << endl;
+    cout << findPartial(anchor,row) << endl;
     LeftPart(partialWord, n, limit, rack, anchor, board);
+    cout << "leftpart worked"<<endl;
     //after this point, LegalMove should have fully populated the legalMoves map above.
     //when converting from the map into a board, also keep track of the score and add it to
     for(multimap<string,Tile>::iterator it=legalMoves.begin(); it!=legalMoves.end(); ++it){
@@ -266,7 +268,7 @@ vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
 vector<Board> movesGen(Board board, vector<Tile> rack){
     //I believe this should call everything and return the best moves, which are instances of the board will a play on them
     //The trie is not global, I need to intialize it here.
-    root = getTrie();
+    getTrie();
     //crossCheck(board);//after this step, we now know the valid "vertical" placements.
     vector<Tile> anchors = getAnchors(board);
     vector<Board> allMoves;

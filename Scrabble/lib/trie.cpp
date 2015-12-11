@@ -22,11 +22,11 @@ struct Trie {
             return isEOW;
         }
 
-        if (!hasChild(input[0])){
+        if (!hasChild(tolower(input[0]))){
             return false;
         }
 
-        return (children[input[0]])->hasWord(input+1, length-1);
+        return (children[tolower(input[0])])->hasWord(input+1, length-1);
     }
 
     void printAll(const string& prefix){
@@ -62,26 +62,25 @@ struct Trie {
           traverse should travel along the S child to that node,
           then the T child of that node, then the O child
           */
-          cout << "traversing against " << (int)str[0]<<" str size is "<<str.size() << endl;
           
         if((str.size()==1&&str[0]==0) || str.size()==0)return *this;
-        cout << "traversing, line 67"<<endl;
-        if (str.size() > 1){
+        if (str.size() > 1 && str[0]==0){
             str = str.substr(1, str.size()-1);
         }
-        cout << str.size() << endl;
         string next = str.substr(1,str.size()-1);
+        cout << next << endl;
         for(map<char, Trie*>::iterator it = children.begin(); it != children.end(); it++){
-            if (str.size()==1 && (it->first == str[0])){
-                cout << "return trie" << endl;
+            if (it->first == tolower(str[0]) && str.size() == 1){
+                cout << "when i return the trie is off of " << str[0] << endl;
                 return *(it->second);
             }
             
-            if (it->first == str[0]){
-                cout << "traversing" << endl;
+            if (it->first == tolower(str[0])){
+                cout << str[0] << "," << endl;
                 it->second->traverse(next);
             }
         }
+        cout << "exiting traverse"<<endl;
     }
 
     void getRackWords(const string& prefix, map<char, int>& rack, vector<string>& results){
@@ -124,14 +123,15 @@ struct Trie {
         isEOW = false;
     }
 };
+
 Trie root;
 bool init=false;
 Trie getTrie() {
     if(init)return root;
     string temp = "";
-    vector<string> results;
     string line;
-    ifstream dict("dictionary.txt"); //opens it
+    ifstream dict; //opens it
+    dict.open("./lib/dictionary.txt");
     if (dict.is_open()){
         while (getline(dict, line)){
             root.insert(&*line.begin(), line.size());

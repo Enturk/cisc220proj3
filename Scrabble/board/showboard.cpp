@@ -1,16 +1,18 @@
-#include <iostream>
-#include "./board/consumer.cpp"
+//#include <iostream> // includes need to be commented appropriately out after testing
+#include "consumer.cpp"
 #include <fstream>
 #include <cstdlib> // for exit()
 using namespace std;
 
+// Nazooom
+// done untested
 // this function simply prints the board and rack out from the saved text file or from the Board struct
-int showboard(Board board, ){
+int showboard(Board board){
     bool spaced = true; // FIXME set to false before turning in. True inserts spaces for the sake of legibility
     
     // switches to show other details of the board
     bool showAnchors = false; // not yet implemented
-    bool showFirstXcheck = false;
+    bool showFirstXcheck = false; // not yet implemented
     bool loadBoard = false; // this skips old load code that I don't want to throw out
 
     if (loadBoard){
@@ -37,16 +39,17 @@ int showboard(Board board, ){
             }
         }
     }
+    
     Tile temp;
     if (spaced) cout << "  1 2 3 4 5 6 7 8 9101112131415";
     else cout << "  123456789012345";
     for (int y = 0; y < 15; y++){
-        cout << "1 "
+        cout << y+1 << " ";
         for (int x = 0; x < 15; x++){
-            temp = board.getTile(y , x)
+            temp = board.getTile(y , x);
             if (temp.letter != '0') cout << temp.letter;
             else if (temp.bonus > 0) cout << temp.bonus;
-            else cout << '-'
+            else cout << '-';
             if (spaced) cout << " ";
         }
         cout << endl;

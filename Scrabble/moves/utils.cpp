@@ -208,6 +208,7 @@ int getScore(string partialWord, Board board, Tile end){
         int score = 0;
         int doubleWord = 0;
         int tripleWord = 0;
+        int rackUsed = 0;
         int length = partialWord.length();
 
         //Word is horizontally oriented
@@ -215,6 +216,9 @@ int getScore(string partialWord, Board board, Tile end){
             //Places tiles onto a temporary side board in order to compute values of all
             //letters in the board in place
             for(int i = length; i >= 0; i--){
+                if(tempBoard.tiles.at(15*y + x).letter == 0){
+                    rackUsed += 1;
+                }
                 tempBoard.tiles.at(15*y + x).letter = partialWord.at(i);
                 x -= 1; 
             }
@@ -304,6 +308,9 @@ int getScore(string partialWord, Board board, Tile end){
         }
         if(tripleWord > 0){
             score = score*3*tripleWord;
+        }
+        if(rackUsed == 7){
+            score += 50;
         }
         return score;
         
