@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+//#include "../lib/structs.cpp"
 #include "../lib/weight.cpp"
 #include <fstream>
 using namespace std;
@@ -62,12 +63,16 @@ struct Trie {
           then the T child of that node, then the O child
           */
         string next = str.substr(1,str.size()-1);
-        for (map<char, Trie*>::iterator it = children.begin(); it!= children.end(); it++){
+        cout << "we should reach here." << endl;
+        for(map<char, Trie*>::iterator it = children.begin(); it != children.end(); it++){
+            cout << "enter loop" << endl;
             if (str.size()==1){
+                cout << "reached return of traverse" << endl;
                 return *(it->second);
             }
-
+            
             if (it->first == str[0]){
+                cout << "traversing" << endl;
                 it->second->traverse(next);
             }
         }

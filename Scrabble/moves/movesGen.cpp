@@ -209,6 +209,10 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
     cout << "208" <<limit<< endl;
     cout << partialWord << endl;
     cout << anchor.bonus << endl;
+    char the[3];
+    the[0]='t';
+    the[1]='h';
+    the[2]='e';
     LeftPart(partialWord, n, limit, rack, anchor, board);
     //after this point, LegalMove should have fully populated the legalMoves map above.
     //when converting from the map into a board, also keep track of the score and add it to
