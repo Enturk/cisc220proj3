@@ -44,7 +44,6 @@ void LegalMove(string partialWord, Tile square){
 }
 
 void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Board board){
-    cout << 47 << endl;
     if(square.letter == 0){
         if(n.isEOW){ //if n is a terminal node
             LegalMove(partialWord,square); //I'm pretty sure the square will be the position of the last letter
@@ -137,9 +136,7 @@ void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anc
      *  This doesn't return anything. Everything is going to be done more-or-less inplace.
      *  Actual valid output moves are passed through LegalMove()
      */
-    cout << "139" << endl;
     ExtendRight(partialWord, n, anchor, rack, board);
-    cout << "140" << endl;
     if(limit>0){
         for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge E out of n*/
             bool LinRack = false; // l is in rack
@@ -204,19 +201,13 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         row = board.getCol(anchor.coords.at(0));
     }
     string partialWord = findPartial(anchor,row);
+    cout << "left of "<<anchor.coords[0]<<","<<anchor.coords[1]<<" "<<partialWord << endl;
     Trie n = root.traverse(partialWord);
     int limit = findLimit(anchor, row);
-    cout << "208" <<limit<< endl;
     cout << partialWord << endl;
-    cout << anchor.bonus << endl;
-    char the[3];
-    the[0]='t';
-    the[1]='h';
-    the[2]='e';
     LeftPart(partialWord, n, limit, rack, anchor, board);
     //after this point, LegalMove should have fully populated the legalMoves map above.
     //when converting from the map into a board, also keep track of the score and add it to
-    cout << "209" << endl;
     for(multimap<string,Tile>::iterator it=legalMoves.begin(); it!=legalMoves.end(); ++it){
         Tile tile = it->second;
         string word = it->first;

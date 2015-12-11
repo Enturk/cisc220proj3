@@ -109,10 +109,10 @@ vector<Tile> getAnchors(Board board){
         vector<Tile> col = board.getCol(i);
         for (int j = 0; j < 14; j++){
             if (row.at(j).letter == 0 && isalpha(row.at(j+1).letter)){ //checks if the tile is empty and the tile next to it has a letter
-                board.getTile(i,j).orient = 1; //horizontal (the way the board normally looks)
-                anchors.push_back(board.getTile(i,j));
+                board.getTile(j,i).orient = 1; //horizontal (the way the board normally looks)
+                anchors.push_back(board.getTile(j,i));
             }
-            if (col.at(j).letter == 0 && isalpha(col.at(j+1).letter)){
+            else if (col.at(j).letter == 0 && isalpha(col.at(j+1).letter)){
                 board.getTile(i,j).orient = 2; //vertically
                 anchors.push_back(board.getTile(i,j));
             }
@@ -164,6 +164,7 @@ vector<Tile> getAnchors(Board board){
     for (int i = 0; i<finalAnchs.size(); i++){
         finalAnchs.at(i).anchor = true;
     }
+    cout << "anchors size: " << finalAnchs.size() << endl;
     return finalAnchs;
 }
 

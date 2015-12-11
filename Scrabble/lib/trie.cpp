@@ -62,12 +62,18 @@ struct Trie {
           traverse should travel along the S child to that node,
           then the T child of that node, then the O child
           */
+          cout << "traversing against " << (int)str[0]<<" str size is "<<str.size() << endl;
+          
+        if((str.size()==1&&str[0]==0) || str.size()==0)return *this;
+        cout << "traversing, line 67"<<endl;
+        if (str.size() > 1){
+            str = str.substr(1, str.size()-1);
+        }
+        cout << str.size() << endl;
         string next = str.substr(1,str.size()-1);
-        cout << "we should reach here." << endl;
         for(map<char, Trie*>::iterator it = children.begin(); it != children.end(); it++){
-            cout << "enter loop" << endl;
-            if (str.size()==1){
-                cout << "reached return of traverse" << endl;
+            if (str.size()==1 && (it->first == str[0])){
+                cout << "return trie" << endl;
                 return *(it->second);
             }
             

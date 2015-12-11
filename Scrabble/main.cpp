@@ -13,6 +13,7 @@ int main() {
     vector<Board> answers;
     answers = movesGen(board, rack); //returns a vector of boards... we need to then display them.
     for (int i = 0; i < answers.size(); i++){
-        //cout the board?
+        // allow user to select a legal move and add it to the board
+        // cout the board with showboard(board)
     }
 }
