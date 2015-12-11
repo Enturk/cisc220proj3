@@ -37,7 +37,6 @@ void LegalMove(string partialWord, Tile square){
      OOT--
      -----
 
-     HASH IS AN ANCHOR FOR VERTICAL AND HORIZONTAL. MASS HYSTERIA.
      */
      legalMoves.insert(pair<string,Tile>(partialWord, square));
 }
@@ -45,6 +44,7 @@ void LegalMove(string partialWord, Tile square){
 void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Board board){
     if(square.letter == 0){
         if(n.isEOW){ //if n is a terminal node
+            cout << "passing"<<square.coords[0]<<","<<square.coords[1]<<endl;
             LegalMove(partialWord,square); //I'm pretty sure the square will be the position of the last letter
         }
         for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge e out of n*/
@@ -211,7 +211,7 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         string word = it->first;
         Board outBoard;
         outBoard.tiles = board.tiles;
-        cout << tile.coords.at(0) <<","<< tile.coords.at(1);
+        cout << tile.coords.at(0) <<","<< tile.coords.at(1)<<endl;
         Tile lastTile = outBoard.getTile(tile.coords.at(0),tile.coords.at(1));
         lastTile.letter = word[word.size()-1];
         if(tile.orient==1){
@@ -231,7 +231,6 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         }
         
         outBoard.score = getScore(word,board,tile);
-        cout << outBoard.score << endl;
         moves.push_back(outBoard);
     }
     
@@ -244,7 +243,22 @@ vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
        returns the top 20 boards based on the boards find moves will return
     */
     vector<Board> best;
-    for (int i = 0; i < moves.size()-1; i++){
+    int i = 0;
+    int temp = 0;
+    int dist = 0;
+
+    for (dist = moves.size()/2; dist > 0; dist /= 2){
+        for (i = dist; i < moves.size(); i++){
+          for (int j = i-dist; j > -1 && moves.at(j) > moves.at(j+dist); j -= dist){
+            if (moves.at(j) > moves.at(j+ dist)){
+              temp = moves.at(j+dist);
+              moves.at(j+dist) = moves.at(j);
+              moves.at(j) = temp;
+            }
+          }
+        }
+      }
+    /*for (int i = 0; i < moves.size()-1; i++){
         for (int j = 0; j < moves.size()-1; j++){
             if (moves.at(j).score < moves.at(j+1).score){
                 Board temp = moves.at(j);
@@ -252,7 +266,7 @@ vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
                 moves.at(j+1) = temp;
             }
         }
-    }
+    }*/
     for (int i= 0; i < 20; i++){
         best.insert(best.end(), moves.begin(),moves.end());
     }

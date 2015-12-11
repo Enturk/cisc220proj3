@@ -14,7 +14,7 @@ int main() {
     vector<Tile> rack = rackGen();
     vector<Board> answers;
     answers = movesGen(board, rack); //returns a vector of boards... we need to then display them.
-    int input = 20;
+    int input = 1;
     // cout << "how many of the top scoring plays do you want displayed on the board (enter a number less than 21)?" << endl;
     // cin >> input;
     for (int i = 0; i < 20; i++){

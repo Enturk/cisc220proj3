@@ -226,7 +226,6 @@ int getScore(string partialWord, Board board, Tile end){
             //Computes the score of each letter including double and triple letter bonuses
             //Double and triple word bonuses are stored for later computation
             for(int i = 0; i < length; i++){
-                cout << "score: " << score << endl;
                 if(endTile.bonus == 0){
                     score += weight(endTile.letter);
                 }else if(endTile.bonus == 2 || endTile.bonus == 3){
@@ -320,6 +319,7 @@ int getScore(string partialWord, Board board, Tile end){
         if(rackUsed == 7){
             score += 50;
         }
+        cout << "score: " << score << endl;
         return score;
         
     }
