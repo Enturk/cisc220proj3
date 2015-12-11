@@ -9,19 +9,10 @@
 int main() {
     Board board = boardGen();
     vector<Tile> rack = rackGen();
-    vector<Tile> anchors = getAnchors(board);
-    cout << anchors[0].coords[0] << anchors[0].coords[1] << endl;
-    for (int i = 0; i < anchors.size(); i++){ //to test getAnchors
-      cout << anchors.at(i).coords.at(0) << "," << anchors.at(i).coords.at(1);
-    }
-    //vector<Board> moves = movesGen(board, rack);
-    // the only thing left to do is sort moves by move.score.
-    //cout << moves[0] << endl;
-    
-     //idk who wrote this ^^^ bit but that is taken care of in movesGen now! -Sam
     
     vector<Board> answers;
     answers = movesGen(board, rack); //returns a vector of boards... we need to then display them.
     for (int i = 0; i < answers.size(); i++){
+        //cout the board?
     }
 }

@@ -33,8 +33,6 @@ string findPartial(Tile anchor, vector<Tile> row){
      */
 
      int dir = anchor.orient;
-     cout << "attempting to findPartial"<<endl;
-     //if dir is horiz and x=0 or dir is vert and y is zero, return empty string.
      int x=anchor.coords.at(dir-1);
      if(x==0)return "";
      int i= x-1;
@@ -59,26 +57,23 @@ void crossCheck(Tile& tile, Board& board){
   string word;
   string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   
-  cout << "attempting to x check " << tile.coords[0] <<":"<<tile.coords[1]<<";"<<tile.orient<<endl;
   vector<Tile> row;
   if(tile.orient==1)row = board.getRow(tile.coords[1]);
   else if(tile.orient==2)row = board.getCol(tile.coords[0]);
-  string leftSide = findPartial(tile, row);
-  reverse(row.begin(),row.end());
-  cout << "X:" << tile.coords[tile.orient-1]<<endl;
-  for(int i=0;i<row.size()-1;i++){
-      Tile t = row.at(i);
-      t.coords.at(tile.orient-1)=14-t.coords.at(tile.orient-1);
-  }
-  string rightSide = findPartial(tile, row);
-  reverse(row.begin(),row.end());
-  for(int i=0;i<row.size()-1;i++){
-      Tile t = row.at(i);
-      t.coords.at(tile.orient-1)=14-t.coords.at(tile.orient-1);
-  }
   
+  string leftSide = findPartial(tile, row);
+  
+  reverse(row.begin(),row.end());
+  
+  tile.coords.at(tile.orient-1)=14-tile.coords.at(tile.orient-1);
+  
+  string rightSide = findPartial(tile, row);
+  reverse(rightSide.begin(),rightSide.end());
+  
+  reverse(row.begin(),row.end());
+  tile.coords.at(tile.orient-1)=14-tile.coords.at(tile.orient-1);
+  cout << "xcheck at ("<<tile.coords[0]<<","<<tile.coords[1]<<");"<<tile.orient<<": "<<leftSide<<"_"<<rightSide<<endl;
   int wordLength = leftSide.length()+1+rightSide.length();
-  cout << leftSide << "+" << rightSide << endl;
   bitset<26> old = tile.xchecks;
   for (int i = 0; i < 26; i++){
       word = leftSide + alphabet[i] + rightSide;
@@ -113,30 +108,23 @@ vector<Tile> getAnchors(Board board){
         vector<Tile> row = board.getRow(i);
         vector<Tile> col = board.getCol(i);
         for (int j = 0; j < 14; j++){
-            if (col.at(j).letter == 0 && isalpha(row.at(j+1).letter) && isalpha(col.at(j+1).letter)){
-                anchors.push_back(board.tiles.at(j));
-                board.tiles.at(j).orient = 3; //vertically AND horizontally. special.
+            if (row.at(j).letter == 0 && isalpha(row.at(j+1).letter)){ //checks if the tile is empty and the tile next to it has a letter
+                board.getTile(i,j).orient = 1; //horizontal (the way the board normally looks)
+                anchors.push_back(board.getTile(i,j));
             }
-            else if (row.at(j).letter == 0 && isalpha(row.at(j+1).letter)){ //checks if the tile is empty and the tile next to it has a letter
-                anchors.push_back(board.tiles.at(j));
-                board.tiles.at(j).orient = 1; //horizontal (the way the board normally looks)
-            }
-            else if (col.at(j).letter == 0 && isalpha(col.at(j+1).letter)){
-                anchors.push_back(board.tiles.at(j));
-                board.tiles.at(j).orient = 2; //vertically
+            if (col.at(j).letter == 0 && isalpha(col.at(j+1).letter)){
+                board.getTile(i,j).orient = 2; //vertically
+                anchors.push_back(board.getTile(i,j));
             }
             
         }
     }
-    cout << "line 165 in utils" << endl;
     //cross checks everything that is adjacent to a filled tile.
     for (int j = 0; j < 15; j++){
         vector<Tile> row = board.getRow(j);
         vector<Tile> col = board.getCol(j);
-        cout << "shit" << endl;
         for (int i =0; i < 15; i++){
             if (i ==0){
-                cout << "j is "<< j << endl;
                 if (row.at(i).letter == 0 && (isalpha(row.at(i+1).letter))){
                     row.at(i).orient = 1;
                     crossCheck(row.at(i), board);
@@ -157,7 +145,6 @@ vector<Tile> getAnchors(Board board){
                 }
             }
             else {
-                cout << "i is "<< i << endl;
                 if (row.at(i).letter == 0 && (isalpha(row.at(i+1).letter) || isalpha(row.at(i-1).letter))){
                     row.at(i).orient = 1;
                     crossCheck(row.at(i), board);
@@ -174,7 +161,7 @@ vector<Tile> getAnchors(Board board){
             finalAnchs.push_back(anchors.at(i));
         }
     }
-    for (int i = 0; finalAnchs.size(); i++){
+    for (int i = 0; i<finalAnchs.size(); i++){
         finalAnchs.at(i).anchor = true;
     }
     return finalAnchs;
@@ -227,7 +214,7 @@ int getScore(string partialWord, Board board, Tile end){
             //Places tiles onto a temporary side board in order to compute values of all
             //letters in the board in place
             for(int i = length; i >= 0; i--){
-                tempBoard.tiles.at(14*y + x).letter = partialWord.at(i);
+                tempBoard.tiles.at(15*y + x).letter = partialWord.at(i);
                 x -= 1; 
             }
             //Computes the score of each letter including double and triple letter bonuses
@@ -272,7 +259,7 @@ int getScore(string partialWord, Board board, Tile end){
             //Places tiles onto a temporary side board in order to compute values of all
             //letters in the board in place
             for(int i = length; i >= 0; i--){
-                tempBoard.tiles.at(14*y + x).letter = partialWord.at(i);
+                tempBoard.tiles.at(15*y + x).letter = partialWord.at(i);
                 y -= 1; 
             }
             //Computes the score of each letter including double and triple letter bonuses

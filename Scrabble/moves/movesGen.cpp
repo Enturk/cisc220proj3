@@ -44,6 +44,7 @@ void LegalMove(string partialWord, Tile square){
 }
 
 void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Board board){
+    cout << 47 << endl;
     if(square.letter == 0){
         if(n.isEOW){ //if n is a terminal node
             LegalMove(partialWord,square); //I'm pretty sure the square will be the position of the last letter
@@ -77,7 +78,7 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Boa
                     x = square.coords.at(1);
                     row = board.getRow(square.coords.at(0));
                 }
-                if(x==15){
+                if(x==14){
                     rack.push_back(temp);
                     return;//i dunno what to return, just return?
                 }
@@ -114,7 +115,7 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Boa
                 x = square.coords.at(1);
                 row = board.getRow(square.coords.at(0));
             }
-            if(x==15) return;//i dunno what to return, just return?
+            if(x==14) return;//i dunno what to return, just return?
             Tile nextSquare = row.at(x+1);
             int tempOrient = nextSquare.orient;
             nextSquare.orient=square.orient;
@@ -136,7 +137,9 @@ void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anc
      *  This doesn't return anything. Everything is going to be done more-or-less inplace.
      *  Actual valid output moves are passed through LegalMove()
      */
+    cout << "139" << endl;
     ExtendRight(partialWord, n, anchor, rack, board);
+    cout << "140" << endl;
     if(limit>0){
         for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge E out of n*/
             bool LinRack = false; // l is in rack
@@ -196,22 +199,26 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
     }
     vector<Tile> row;
     if(anchor.orient==1){
-        row = board.getRow(anchor.coords[1]);
+        row = board.getRow(anchor.coords.at(1));
     } else if(anchor.orient==2){
-        row = board.getRow(anchor.coords[0]);
+        row = board.getCol(anchor.coords.at(0));
     }
     string partialWord = findPartial(anchor,row);
     Trie n = root.traverse(partialWord);
     int limit = findLimit(anchor, row);
+    cout << "208" <<limit<< endl;
+    cout << partialWord << endl;
+    cout << anchor.bonus << endl;
     LeftPart(partialWord, n, limit, rack, anchor, board);
     //after this point, LegalMove should have fully populated the legalMoves map above.
     //when converting from the map into a board, also keep track of the score and add it to
+    cout << "209" << endl;
     for(multimap<string,Tile>::iterator it=legalMoves.begin(); it!=legalMoves.end(); ++it){
         Tile tile = it->second;
         string word = it->first;
         Board outBoard;
         outBoard.tiles = board.tiles;
-        Tile lastTile = outBoard.getTile(tile.coords[0],tile.coords[1]);
+        Tile lastTile = outBoard.getTile(tile.coords.at(0),tile.coords.at(1));
         lastTile.letter = word[word.size()-1];
 
         if(tile.orient==1){
@@ -268,7 +275,9 @@ vector<Board> movesGen(Board board, vector<Tile> rack){
     //crossCheck(board);//after this step, we now know the valid "vertical" placements.
     vector<Tile> anchors = getAnchors(board);
     vector<Board> allMoves;
+    cout <<"We will now test all of the anchors..."<<endl;
     for(int i=0;i<anchors.size();i++){
+        cout << "Trying to findMoves for "<<anchors[i].coords[0]<<","<<anchors[i].coords[1]<<endl;
         vector<Board> moves = findMoves(anchors[i],board, rack);
         allMoves.insert(allMoves.end(),moves.begin(),moves.end());
     }
