@@ -61,7 +61,7 @@ struct Board {
          }
          return c;
     }
-
+/*
     ostream& operator<<(const Board& board){
         /* This may or may not be working
          * ARGS: const Board& board; an input board
@@ -70,7 +70,7 @@ struct Board {
          * if I do cout << board;, this should return an output stream object that has the board in it
          *
          * This is a way of printing the board
-         */
+         
         ostringstream os;//this throws warnings. I probably did something wrong;
         for(int i=0;i<15;i++){
             for(int j=0;j<15;j++){
@@ -80,29 +80,34 @@ struct Board {
             }
         }
         return os;
+        
     }
+*/
     
     void print(){
         //Nazim
         bool spaced = true; // FIXME set to false before turning in. True inserts spaces for the sake of legibility
         // debugging bools
-        // bool printAnchors = false;
+        bool printAnchors = true; // FIXME set to false before turning in
+        int rank = 0;
         Tile temp = this->getTile(0,0);
-        if (spaced) cout << "  1 2 3 4 5 6 7 8 9 0 1 2 3 4 5";
-        else cout << "  123456789012345";
+        if (spaced) cout << "  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4";
+        else cout << "  012345678901234";
         cout << endl;
         for (int y = 0; y < 15; y++){
-            cout << y+1;
-            if (!(y>8)) cout << " "; // spacer to keep things even
+            rank = y+1;
+            if (y>8) rank -= 10;
+            cout << rank << " ";
             for (int x = 0; x < 15; x++){
                 temp = this->getTile(x, y);
                 if (temp.letter != 0){cout << temp.letter;}
-                //else if (printAnchors && temp.anchor) {cout << temp.orient;}
+                else if (printAnchors && temp.orient != 0) {cout << '@';}
                 else if (temp.bonus != 0) {cout << temp.bonus;}
                 else {cout << '-';}
                 if (spaced) cout << " ";
             }
         cout << endl;
         }
+    cout << endl;
     }
 };

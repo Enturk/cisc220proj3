@@ -44,12 +44,13 @@ void LegalMove(string partialWord, Tile square){
 void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Board board){
     if(square.letter == 0){
         if(n.isEOW){ //if n is a terminal node
+            cout << "I have declared "<<partialWord<<" as a valid move."<<endl;
             LegalMove(partialWord,square); //I'm pretty sure the square will be the position of the last letter
         }
         for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge e out of n*/
             bool LinRack = false; // l is in rack
             for(int i=0;i<rack.size();i++){
-                LinRack = rack.at(i).letter==e->first;
+                LinRack = tolower(rack.at(i).letter)==e->first;
             }
             bool xchecker = square.xchecks[((int)(e->first))-64];
             if(LinRack && xchecker){/*the letter l labeling edge E is in our rack AND l is in the xcheck set of square*/
@@ -57,7 +58,7 @@ void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Boa
                 //remove a tile l from the rack
                 Tile temp;
                 for(int i=0;i<rack.size();i++){
-                    if(rack.at(i).letter==e->first){
+                    if(tolower(rack.at(i).letter)==e->first){
                         temp = rack.at(i);
                         rack.erase(rack.begin()+i);//remove rack[i] from the vector
                         break;
@@ -134,19 +135,20 @@ void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anc
      *  This doesn't return anything. Everything is going to be done more-or-less inplace.
      *  Actual valid output moves are passed through LegalMove()
      */
+    cout << "entered leftPart on "<<anchor.coords.at(0)<<","<<anchor.coords.at(1)<<endl;
     ExtendRight(partialWord, n, anchor, rack, board);
     if(limit>0){
         for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge E out of n*/
             bool LinRack = false; // l is in rack
             for(int i=0;i<rack.size();i++){
-                LinRack = rack.at(i).letter==e->first;
+                LinRack = tolower(rack.at(i).letter)==e->first;
             }
             if(LinRack){/*the letter l labeling edge E is in our rack*/
                 char l = e->first;
                 //remove a tile l from the rack
                 Tile temp;
                 for(int i=0;i<rack.size();i++){
-                    if(rack.at(i).letter==e->first){
+                    if(tolower(rack.at(i).letter)==e->first){
                         temp = rack.at(i);
                         rack.erase(rack.begin()+i);//remove rack[i] from the vector
                         break;
@@ -201,6 +203,8 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
     string partialWord = findPartial(anchor,row);
     string str(partialWord);
     Trie n = root.traverse(str);
+    cout << anchor.coords[0]<<anchor.coords[1]<<endl;
+    cout << anchor.xchecks << endl;
     int limit = findLimit(anchor, row);
     LeftPart(partialWord, n, limit, rack, anchor, board);
     //after this point, LegalMove should have fully populated the legalMoves map above.
@@ -211,7 +215,6 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         Board outBoard;
         outBoard.tiles = board.tiles;
         outBoard.getTile(tile.coords.at(0),tile.coords.at(1)).letter = word[word.size()-1];
-        outBoard.print();
         if(tile.orient==1){
             int i=0;
             for(string::iterator str=(word.end()-1); str!=word.begin(); --str){

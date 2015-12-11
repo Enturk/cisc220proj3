@@ -41,6 +41,7 @@ string findPartial(Tile anchor, vector<Tile> row){
      for(i;i<x;i++){
         out.append(string(1,row.at(i).letter));
      }
+     if(out[0]==0)out=out.substr(1,out.size()-1);
      return out;
 }
 
@@ -73,16 +74,19 @@ void crossCheck(Tile& tile, Board& board){
   reverse(row.begin(),row.end());
   tile.coords.at(tile.orient-1)=14-tile.coords.at(tile.orient-1);
   //cout << "xcheck at ("<<tile.coords[0]<<","<<tile.coords[1]<<");"<<tile.orient<<": "<<leftSide<<"_"<<rightSide<<endl;
-  int wordLength = leftSide.length()+1+rightSide.length();
+  
   bitset<26> old = tile.xchecks;
   for (int i = 0; i < 26; i++){
+      int wordLength = leftSide.length()+1+rightSide.length();
       word = leftSide + alphabet[i] + rightSide;
-      char *y = new char[word.length()+1];
-      strcpy(y, word.c_str());
+      char * y = new char[wordLength+1];
+      copy(word.begin(),word.end(),y);
+      y[wordLength] = '\0';
       tile.xchecks[i] = trie.hasWord(y, wordLength); // I'm a genius. That's Nazim. He really is.
       delete[] y;
   }
-  tile.xchecks = tile.xchecks | old;
+  tile.xchecks = tile.xchecks & old;
+  if(tile.coords[0]==0&&tile.coords[1]==11)cout<<tile.xchecks<<endl;
 }
 
 vector<Tile> getAnchors(Board board){
@@ -126,32 +130,32 @@ vector<Tile> getAnchors(Board board){
         for (int i =0; i < 15; i++){
             if (i ==0){
                 if (row.at(i).letter == 0 && (isalpha(row.at(i+1).letter))){
-                    row.at(i).orient = 1;
-                    crossCheck(row.at(i), board);
+                    board.getTile(j,i).orient = 1;
+                    crossCheck(board.getTile(j,i), board);
                 }
                 if (col.at(i).letter == 0 && (isalpha(col.at(i+1).letter))){
-                    col.at(i).orient = 2;
-                    crossCheck(col.at(i), board);
+                    board.getTile(i,j).orient = 2;
+                    crossCheck(board.getTile(i,j), board);
                 }
             }
             else if (i ==14){
                 if (row.at(i).letter == 0 && (isalpha(row.at(i-1).letter))){
-                    row.at(i).orient = 1;
-                    crossCheck(row.at(i), board);
+                    board.getTile(j,i).orient = 1;
+                    crossCheck(board.getTile(j,i), board);
                 }
                 if (col.at(i).letter == 0 && (isalpha(col.at(i-1).letter))){
-                    col.at(i).orient = 2;
-                    crossCheck(col.at(i), board);
+                    board.getTile(i,j).orient = 2;
+                    crossCheck(board.getTile(i,j), board);
                 }
             }
             else {
                 if (row.at(i).letter == 0 && (isalpha(row.at(i+1).letter) || isalpha(row.at(i-1).letter))){
-                    row.at(i).orient = 1;
-                    crossCheck(row.at(i), board);
+                    board.getTile(j,i).orient = 1;
+                    crossCheck(board.getTile(j,i), board);
                 }
                 if (col.at(i).letter == 0 && (isalpha(col.at(i+1).letter) || isalpha(col.at(i-1).letter))){
-                    col.at(i).orient = 2;
-                    crossCheck(col.at(i), board);
+                    board.getTile(i,j).orient = 2;
+                    crossCheck(board.getTile(i,j), board);
                 }
             }
         }
@@ -194,6 +198,29 @@ int findLimit(Tile anchor, vector<Tile> row){
     return limit;
 }
 
+vector<int> scoreit(Tile t){
+        vector<int> ans(4);
+        if (t.bonus ==0){
+          ans.at(0) += t.weight;
+        }
+        if (t.bonus == 2){
+          ans.at(0) += t.bonus * t.weight;
+        }
+        if (t.bonus == 3){
+          ans.at(0) += t.bonus * t.weight;
+        }
+        if (t.bonus == 3){
+          ans.at(1)++;
+        }
+        if (t.bonus == 4){
+          ans.at(2)++;
+        }
+        if (t.letter == 0){
+          ans.at(3)++;
+        }
+    return ans;
+}
+
 int getScore(string partialWord, Board board, Tile end){
         //Josh
         /* ARGS: partialWord; legal partial word combination formed from rack tiles
@@ -203,122 +230,69 @@ int getScore(string partialWord, Board board, Tile end){
          */
         Board tempBoard = board;
         Tile endTile = end;
-        int x = endTile.coords.at(0);
-        int y = endTile.coords.at(1);
         int score = 0;
-        int doubleWord = 0;
-        int tripleWord = 0;
-        int rackUsed = 0;
+        int doublebonus = 0;
+        int triplebonus = 0;
+        int rack = 0;
+        int xcoord = endTile.coords.at(0);
+        int ycoord = endTile.coords.at(1);
         int length = partialWord.length();
-        
-        
-        //Word is horizontally oriented
-        if (endTile.orient == 1){
-            //Places tiles onto a temporary side board in order to compute values of all
-            //letters in the board in place
-            for(int i = length-1; i >= 0; i--){
-                if(tempBoard.getTile(x, y).letter == 0){
-                    rackUsed += 1;
+        //If the word is horizontally oriented, this is the right-most board letter of the word
+        if (endTile.orient = 1){
+            for (int i = 0; i < length; i++){
+                Tile temp = board.getTile(xcoord-i, ycoord);
+                vector<int> scoreDoubTripRack(4);
+                scoreDoubTripRack = scoreit(temp);
+                score += scoreDoubTripRack.at(0);
+                doublebonus += scoreDoubTripRack.at(1);
+                triplebonus += scoreDoubTripRack.at(2);
+                rack += scoreDoubTripRack.at(3);
+
+                tempBoard.getTile(xcoord-i, ycoord).letter = partialWord.at(length-1-i);
+                int j = 1;
+                while (isalpha(tempBoard.getTile(xcoord, ycoord +j).letter) && (ycoord + j) <15){
+                  score += tempBoard.getTile(xcoord, ycoord +j).weight;
+                  j++;
                 }
-                tempBoard.getTile(x, y).letter = partialWord.at(i);
-                x -= 1;
-            }
-            //Computes the score of each letter including double and triple letter bonuses
-            //Double and triple word bonuses are stored for later computation
-            for(int i = 0; i < length; i++){
-                if(endTile.bonus == 0){
-                    score += weight(endTile.letter);
-                }else if(endTile.bonus == 2 || endTile.bonus == 3){
-                    score += (weight(endTile.letter)*endTile.bonus);
-                }else if(endTile.bonus == 4){
-                    score += weight(endTile.letter);
-                    doubleWord += 1;
-                }else if(endTile.bonus == 9){
-                    score += weight(endTile.letter);
-                    tripleWord += 1;
+                while (isalpha(tempBoard.getTile(xcoord, ycoord -j).letter) && (ycoord - j) >=0){
+                  score += tempBoard.getTile(xcoord, ycoord -j).weight;
+                  j++;
                 }
-                //Move endTile over by 1 to the left
-                endTile = tempBoard.getTile(endTile.coords.at(0)-1, y);
-            }
-            
                 
-            //adds score of adjacent connected letters above each letter in the word to the total score
-            Tile above = tempBoard.getTile(endTile.coords.at(0), endTile.coords.at(1)-1);
-            if(above.letter != 0){
-                while(above.coords.at(1) >= 0 && above.letter != 0){
-                    score += weight(above.letter);
-                    above = tempBoard.getTile(above.coords.at(0), above.coords.at(1) - 1);
-                }
-            }
-                
-            Tile below = tempBoard.getTile(endTile.coords.at(0), endTile.coords.at(1)+1);
-            if(below.letter != 0){
-                while(below.coords.at(1) < 15 && below.letter != 0){
-                    score += weight(below.letter);
-                    below = tempBoard.getTile(above.coords.at(0), above.coords.at(1) + 1);
-                }
             }
         }
-        
-        
-        //Word is vertically oriented 
-        else if (endTile.orient == 2){
-            
-            //Places tiles onto a temporary side board in order to compute values of all
-            //letters in the board in place
-            for(int i = length-1; i > 0; i--){
-                if(tempBoard.getTile(x, y).letter == 0){
-                    rackUsed += 1;
-                }                
-                tempBoard.getTile(x,y).letter = partialWord.at(i);
-                y -= 1; 
-            }
-            
-            //Computes the score of each letter including double and triple letter bonuses
-            //Double and triple word bonuses are stored for later computation
-            for(int i = 0; i < length; i++){
-                if(endTile.bonus == 0){
-                    score += weight(endTile.letter);
-                }else if(endTile.bonus == 2 || endTile.bonus == 3){
-                    score += (weight(endTile.letter)*endTile.bonus);
-                }else if(endTile.bonus == 4){
-                    score += weight(endTile.letter);
-                    doubleWord += 1;
-                }else if(endTile.bonus == 9){
-                    score += weight(endTile.letter);
-                    tripleWord += 1;
+        if (endTile.orient = 2){
+            for (int i = 0; i < length; i++){
+                Tile temp = board.getTile(xcoord, ycoord-i);
+                vector<int> scoreDoubTripRack(4);
+                scoreDoubTripRack = scoreit(temp);
+                score += scoreDoubTripRack.at(0);
+                doublebonus += scoreDoubTripRack.at(1);
+                triplebonus += scoreDoubTripRack.at(2);
+                rack += scoreDoubTripRack.at(3);
+
+                tempBoard.getTile(xcoord, ycoord-i).letter = partialWord.at(length-1-i);
+                int j = 1;
+                while (isalpha(tempBoard.getTile(xcoord + j, ycoord).letter) && (ycoord + j) <15){
+                  score += tempBoard.getTile(xcoord+ j, ycoord).weight;
+                  j++;
                 }
-                //Move endTile over by 1 up
-                endTile = tempBoard.getTile(x, endTile.coords.at(1)-1);
-            }
-                
-                
-            Tile left = tempBoard.getTile(x - 1, endTile.coords.at(1));
-            if(left.letter != 0){
-                while(left.coords.at(0) >= 0 && left.letter != 0){
-                    score += weight(left.letter);
-                    left = tempBoard.getTile(left.coords.at(0) - 1, left.coords.at(1));
+                while (isalpha(tempBoard.getTile(xcoord-j, ycoord).letter) && (ycoord - j) >=0){
+                  score += tempBoard.getTile(xcoord-j, ycoord).weight;
+                  j++;
                 }
-            }
                 
-            Tile right = tempBoard.getTile(x + 1, endTile.coords.at(1));
-            if(right.letter != 0){
-                while(right.coords.at(0) < 15 && right.letter != 0){
-                    score += weight(right.letter);
-                    right = tempBoard.getTile(right.coords.at(0) + 1, right.coords.at(1));
-                }
             }
-        }
-        
-        if(doubleWord > 0){
-            score = score*2*doubleWord;
-        }
-        if(tripleWord > 0){
-            score = score*3*tripleWord;
-        }
-        if(rackUsed == 7){
-            score += 50;
-        }
-        return score;
-        
+          if(doublebonus > 0){
+              score = score*2*doublebonus;
+          }
+          if(triplebonus > 0){
+              score = score*3*triplebonus;
+          }
+          if(rack == 7){
+              score += 50;
+          }
+          return score;
+
     }
+}
