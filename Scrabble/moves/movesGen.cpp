@@ -200,7 +200,6 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         row = board.getCol(anchor.coords.at(0));
     }
     string partialWord = findPartial(anchor,row);
-    cout << "left of "<<anchor.coords[0]<<","<<anchor.coords[1]<<" "<<partialWord << endl;
     string str(partialWord);
     Trie n = root.traverse(str);
     int limit = findLimit(anchor, row);
@@ -212,13 +211,13 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         string word = it->first;
         Board outBoard;
         outBoard.tiles = board.tiles;
+        cout << tile.coords.at(0) <<","<< tile.coords.at(1);
         Tile lastTile = outBoard.getTile(tile.coords.at(0),tile.coords.at(1));
         lastTile.letter = word[word.size()-1];
         if(tile.orient==1){
             int i=0;
             for(string::iterator str=(word.end()-1); str!=word.begin(); --str){
-                Tile outTile = outBoard.getTile(tile.coords[0]-i,tile.coords[1]);
-                outTile.letter = *str;
+                outBoard.getTile(tile.coords[0]-i,tile.coords[1]).letter = *str;
                 //I should probably be keeping track of the score here as well;
                 i++;
             }
@@ -226,12 +225,13 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         if(tile.orient==2){
             int i=0;
             for(string::iterator str=(word.end()-1); str!=word.begin(); --str){
-                Tile outTile = outBoard.getTile(tile.coords[0],tile.coords[1]-i);
-                outTile.letter = *str;
+                outBoard.getTile(tile.coords[0],tile.coords[1]-i).letter = *str;
                 i++;
             }
         }
+        
         outBoard.score = getScore(word,board,tile);
+        cout << outBoard.score << endl;
         moves.push_back(outBoard);
     }
     
@@ -246,7 +246,7 @@ vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
     vector<Board> best;
     for (int i = 0; i < moves.size()-1; i++){
         for (int j = 0; j < moves.size()-1; j++){
-            if (moves.at(j).score > moves.at(j+1).score){
+            if (moves.at(j).score < moves.at(j+1).score){
                 Board temp = moves.at(j);
                 moves.at(j) = moves.at(j+1);
                 moves.at(j+1) = temp;
@@ -269,7 +269,6 @@ vector<Board> movesGen(Board board, vector<Tile> rack){
     vector<Board> allMoves;
     //cout <<"We will now test all of the anchors..."<<endl;
     for(int i=0;i<anchors.size();i++){
-        cout << "Trying to findMoves for "<<anchors[i].coords[0]<<","<<anchors[i].coords[1]<<endl;
         vector<Board> moves = findMoves(anchors[i],board, rack);
         allMoves.insert(allMoves.end(),moves.begin(),moves.end());
     }
