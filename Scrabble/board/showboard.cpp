@@ -5,7 +5,7 @@
 using namespace std;
 
 // Nazooom
-// done untested
+// compiles but untested
 // this function simply prints the board and rack out from the saved text file or from the Board struct
 int showboard(Board board){
     bool spaced = true; // FIXME set to false before turning in. True inserts spaces for the sake of legibility

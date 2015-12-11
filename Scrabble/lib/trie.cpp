@@ -77,7 +77,7 @@ struct Trie {
             
             if (it->first == tolower(str[0])){
                 cout << str[0] << "," << endl;
-                it->second->traverse(next);
+                return it->second->traverse(next);
             }
         }
         cout << "exiting traverse"<<endl;

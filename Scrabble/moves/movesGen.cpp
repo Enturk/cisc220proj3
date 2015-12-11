@@ -203,9 +203,10 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
     string partialWord = findPartial(anchor,row);
     cout << "left of "<<anchor.coords[0]<<","<<anchor.coords[1]<<" "<<partialWord << endl;
     string str(partialWord);
+    cout << partialWord << endl;
     Trie n = root.traverse(str);
     int limit = findLimit(anchor, row);
-    cout << findPartial(anchor,row) << endl;
+    cout << "209"<<partialWord<< endl;
     LeftPart(partialWord, n, limit, rack, anchor, board);
     cout << "leftpart worked"<<endl;
     //after this point, LegalMove should have fully populated the legalMoves map above.
