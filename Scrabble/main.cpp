@@ -14,11 +14,6 @@ int main() {
     for (int i = 0; i < anchors.size(); i++){ //to test getAnchors
       cout << anchors.at(i).coords.at(0) << "," << anchors.at(i).coords.at(1);
     }
-    
-    string partial = findPartial(anchors.at(0), board); //test
-    
-    int limit = findLimit(anchors.at(0), board); //test
-    
     //vector<Board> moves = movesGen(board, rack);
     // the only thing left to do is sort moves by move.score.
     //cout << moves[0] << endl;

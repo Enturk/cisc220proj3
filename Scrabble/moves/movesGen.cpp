@@ -194,9 +194,15 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         anchor.orient = temp;
         return moves;
     }
-    string partialWord = findPartial(anchor, board);
+    vector<Tile> row;
+    if(anchor.orient==1){
+        row = board.getRow(anchor.coords[1]);
+    } else if(anchor.orient==2){
+        row = board.getRow(anchor.coords[0]);
+    }
+    string partialWord = findPartial(anchor,row);
     Trie n = root.traverse(partialWord);
-    int limit = findLimit(anchor, board);
+    int limit = findLimit(anchor, row);
     LeftPart(partialWord, n, limit, rack, anchor, board);
     //after this point, LegalMove should have fully populated the legalMoves map above.
     //when converting from the map into a board, also keep track of the score and add it to

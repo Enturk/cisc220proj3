@@ -38,7 +38,7 @@ struct Board {
 
     Tile getTile(int col, int row){
         //the index of a tile with coordinates of (x,y) in the 2D array is (15*x)+y.
-        return tiles[15*row + col];
+        return tiles[14*row + col];
     }
 
     vector<Tile> getRow(int row){
@@ -47,7 +47,7 @@ struct Board {
          */
          vector<Tile> r;
          for (int i = 0; i < 15; i++){
-           r.push_back(tiles.at(15*row + i)); //adds each tile in that row to the vector
+           r.push_back(tiles.at(14*row + i)); //adds each tile in that row to the vector
          }
          return r;
     }
@@ -57,7 +57,7 @@ struct Board {
          */
          vector<Tile> c;
          for (int i= 0; i < 15; i++){
-           c.push_back(tiles.at(15*i + col));
+           c.push_back(tiles.at(14*i + col));
          }
          return c;
     }

@@ -4,6 +4,7 @@
 #include <bitset>
 #include <map>
 #include <fstream>
+#include <algorithm>
 #include "../lib/structs.cpp"
 #include "../lib/trie.cpp"
 
@@ -32,16 +33,10 @@ string findPartial(Tile anchor, vector<Tile> row){
      */
 
      int dir = anchor.orient;
+     cout << "attempting to findPartial"<<endl;
      //if dir is horiz and x=0 or dir is vert and y is zero, return empty string.
-     if((dir==1 && anchor.coords.at(0)==0) || (dir==2 && anchor.coords.at(1)==0)) return "";
-
-     int x; //the pos of the anchor
-     if(dir==1){ //we going horizontally
-         x = anchor.coords.at(0);
-     }
-     else{ // we going vertically
-         x = anchor.coords.at(1);
-     }
+     int x=anchor.coords.at(dir-1);
+     if(x==0)return "";
      int i= x-1;
      string out;
      for(i;row.at(i).letter!=0&&i>0;i--);//
@@ -56,21 +51,6 @@ void crossCheck(Tile& tile, Board& board){
     /* Need to deal with orientation and other side of the tile
     tile.orient is 1 if just horizontal, 2 if just vertical, 3 if both
     Scenario 1 passes orient 1 (taken care of automatically)
-    ---
-    -C-
-    -A-
-    -T*
-    ---
-    Scenario 2 passes orient 2 (taken care of automatically)
-    -----
-    -CAT-
-    -*---
-    Scenario 3 passes orient 3 
-    -----
-    -CAR-
-    -A*--
-    -T---
-    -----
     after running partial word horizontally (if necessary) => result 1
     do get col, run findPartial on the right tile => result 2
     loop tile.xchecks to result 1 AND result 2
@@ -80,26 +60,34 @@ void crossCheck(Tile& tile, Board& board){
   string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   
   cout << "attempting to x check " << tile.coords[0] <<":"<<tile.coords[1]<<";"<<tile.orient<<endl;
-  reverse(board.getCol(0).begin(),board.getCol(0).end());
-  string leftSide = findPartial(tile, board);
+  vector<Tile> row;
+  if(tile.orient==1)row = board.getRow(tile.coords[1]);
+  else if(tile.orient==2)row = board.getCol(tile.coords[0]);
+  string leftSide = findPartial(tile, row);
+  reverse(row.begin(),row.end());
+  cout << "X:" << tile.coords[tile.orient-1]<<endl;
+  for(int i=0;i<row.size()-1;i++){
+      Tile t = row.at(i);
+      t.coords.at(tile.orient-1)=14-t.coords.at(tile.orient-1);
+  }
+  string rightSide = findPartial(tile, row);
+  reverse(row.begin(),row.end());
+  for(int i=0;i<row.size()-1;i++){
+      Tile t = row.at(i);
+      t.coords.at(tile.orient-1)=14-t.coords.at(tile.orient-1);
+  }
   
-  int wordLength = partialword.length()+1;
+  int wordLength = leftSide.length()+1+rightSide.length();
+  cout << leftSide << "+" << rightSide << endl;
   bitset<26> old = tile.xchecks;
   for (int i = 0; i < 26; i++){
-      word = partialword + alphabet[i];
+      word = leftSide + alphabet[i] + rightSide;
       char *y = new char[word.length()+1];
       strcpy(y, word.c_str());
       tile.xchecks[i] = trie.hasWord(y, wordLength); // I'm a genius. That's Nazim. He really is.
       delete[] y;
   }
   tile.xchecks = tile.xchecks | old;
-  
-    /*if (swingBothWays){
-      tile.orient = 3;
-        for (int i = 0; i < 26; i++){
-            tile.xchecks[i] = temp.xchecks[i] && tile.xchecks[i]; //Still more genius.
-        }
-    }*/
 }
 
 vector<Tile> getAnchors(Board board){
@@ -194,50 +182,31 @@ vector<Tile> getAnchors(Board board){
 
 
 
-int findLimit(Tile anchor, Board board){
+int findLimit(Tile anchor, vector<Tile> row){
     //Sam--complete, needs testing
     /* args: Tile anchor, the anchor we want to find the left limit of.
      *       Board board, the board to analyze
      * returns: the number of non-anchor tiles to the left of anchor.
      */
     int limit = 0;
-    int xcoord;
-    int ycoord;
+    int xcoord = anchor.coords.at(anchor.orient-1);
     //find the coordinate of the anchor on the board
-    if (anchor.orient ==1){ //computes the limit horizontally
-        xcoord = anchor.coords.at(0);
-        ycoord = anchor.coords.at(1);
-        //check from the anchor to the beginning of the row to add to limit count
-        //if it reaches another anchor limit is stopped
-        for (int i = ycoord; i > 0; i--){
-            //stops the limit count if it hits another anchor
-            if (board.tiles.at(xcoord*15 + i).anchor){
-                return limit;
-            }
-            //increases the limit count for each non-anchor tile left of it that it reaches
-            else{
-                limit++;
-            }
+    //check from the anchor to the beginning of the row to add to limit count
+    //if it reaches another anchor limit is stopped
+    for (int i = xcoord; i > 0; i--){
+        //stops the limit count if it hits another anchor
+        if (row.at(i).anchor){
+            return limit;
         }
-    }
-    else if (anchor.orient ==2){ //checks the limit vertically if the anchor is orient 2
-        xcoord = anchor.coords.at(0);
-        ycoord = anchor.coords.at(1);
-        for (int i = xcoord; i > 0; i--){
-            //stops the limit count if it hits another anchor
-            if (board.tiles.at(i*15 + ycoord).anchor){
-                return limit;
-            }
-            //increases the limit count for each non-anchor tile left of it that it reaches
-            else{
-                limit++;
-            }
+        //increases the limit count for each non-anchor tile left of it that it reaches
+        else{
+            limit++;
         }
     }
     return limit;
 }
 
-int getScore(string partialWord, Board board, Tile endTile){
+int getScore(string partialWord, Board board, Tile end){
         //Josh
         /* ARGS: partialWord; legal partial word combination formed from rack tiles
          *       board; current board
@@ -245,6 +214,7 @@ int getScore(string partialWord, Board board, Tile endTile){
          *RETURNS: The score of the playable word
          */
         Board tempBoard = board;
+        Tile endTile = end;
         int x = endTile.coords.at(0);
         int y = endTile.coords.at(1);
         int score = 0;
@@ -257,7 +227,7 @@ int getScore(string partialWord, Board board, Tile endTile){
             //Places tiles onto a temporary side board in order to compute values of all
             //letters in the board in place
             for(int i = length; i >= 0; i--){
-                tempBoard.tiles.at(15*y + x).letter = partialWord.at(i);
+                tempBoard.tiles.at(14*y + x).letter = partialWord.at(i);
                 x -= 1; 
             }
             //Computes the score of each letter including double and triple letter bonuses
@@ -302,7 +272,7 @@ int getScore(string partialWord, Board board, Tile endTile){
             //Places tiles onto a temporary side board in order to compute values of all
             //letters in the board in place
             for(int i = length; i >= 0; i--){
-                tempBoard.tiles.at(15*y + x).letter = partialWord.at(i);
+                tempBoard.tiles.at(14*y + x).letter = partialWord.at(i);
                 y -= 1; 
             }
             //Computes the score of each letter including double and triple letter bonuses
