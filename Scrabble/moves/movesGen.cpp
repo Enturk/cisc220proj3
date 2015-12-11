@@ -44,7 +44,6 @@ void LegalMove(string partialWord, Tile square){
 void ExtendRight(string partialWord, Trie n, Tile square, vector<Tile> rack, Board board){
     if(square.letter == 0){
         if(n.isEOW){ //if n is a terminal node
-            cout << "passing"<<square.coords[0]<<","<<square.coords[1]<<endl;
             LegalMove(partialWord,square); //I'm pretty sure the square will be the position of the last letter
         }
         for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge e out of n*/
@@ -211,8 +210,7 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         string word = it->first;
         Board outBoard;
         outBoard.tiles = board.tiles;
-        Tile lastTile = outBoard.getTile(tile.coords.at(0),tile.coords.at(1));
-        lastTile.letter = word[word.size()-1];
+        outBoard.getTile(tile.coords.at(0),tile.coords.at(1)).letter = word[word.size()-1];
         outBoard.print();
         if(tile.orient==1){
             int i=0;
