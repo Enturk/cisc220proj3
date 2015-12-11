@@ -210,9 +210,11 @@ int getScore(string partialWord, Board board, Tile end){
         int tripleWord = 0;
         int rackUsed = 0;
         int length = partialWord.length();
-
+        
+        cout << "getScore starts" << endl;
         //Word is horizontally oriented
         if (endTile.orient == 1){
+            cout << "Word is horizontally oriented" << endl;
             //Places tiles onto a temporary side board in order to compute values of all
             //letters in the board in place
             for(int i = length; i >= 0; i--){
@@ -220,8 +222,9 @@ int getScore(string partialWord, Board board, Tile end){
                     rackUsed += 1;
                 }
                 tempBoard.tiles.at(15*y + x).letter = partialWord.at(i);
-                x -= 1; 
+                x -= 1;
             }
+            cout << "temporary board is created" << endl;
             //Computes the score of each letter including double and triple letter bonuses
             //Double and triple word bonuses are stored for later computation
             for(int i = 0; i < length; i++){
@@ -239,6 +242,7 @@ int getScore(string partialWord, Board board, Tile end){
                 //Move endTile over by 1 to the left
                 endTile = tempBoard.getTile(endTile.coords.at(0)-1, y);
             }
+            cout << "scores of tiles plus double letters and triple letters computed" << endl;
                 
             //adds score of adjacent connected letters above each letter in the word to the total score
             Tile above = tempBoard.getTile(endTile.coords.at(0), endTile.coords.at(1)-1);
@@ -261,12 +265,14 @@ int getScore(string partialWord, Board board, Tile end){
         
         //Word is vertically oriented 
         else if (endTile.orient == 2){
+            cout << "Word is vertically oriented" << endl;
             //Places tiles onto a temporary side board in order to compute values of all
             //letters in the board in place
             for(int i = length; i >= 0; i--){
                 tempBoard.tiles.at(15*y + x).letter = partialWord.at(i);
                 y -= 1; 
             }
+            cout << "temporary board is created" << endl;
             //Computes the score of each letter including double and triple letter bonuses
             //Double and triple word bonuses are stored for later computation
             for(int i = 0; i < length; i++){

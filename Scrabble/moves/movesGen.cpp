@@ -135,7 +135,6 @@ void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anc
      *  This doesn't return anything. Everything is going to be done more-or-less inplace.
      *  Actual valid output moves are passed through LegalMove()
      */
-     cout << "entered left part"<<endl;
     ExtendRight(partialWord, n, anchor, rack, board);
     if(limit>0){
         for(map<char,Trie*>::iterator e=n.children.begin(); e!=n.children.end(); ++e){/*each edge E out of n*/
@@ -203,12 +202,9 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
     string partialWord = findPartial(anchor,row);
     cout << "left of "<<anchor.coords[0]<<","<<anchor.coords[1]<<" "<<partialWord << endl;
     string str(partialWord);
-    cout << partialWord << endl;
     Trie n = root.traverse(str);
     int limit = findLimit(anchor, row);
-    cout << "209"<<partialWord<< endl;
     LeftPart(partialWord, n, limit, rack, anchor, board);
-    cout << "leftpart worked"<<endl;
     //after this point, LegalMove should have fully populated the legalMoves map above.
     //when converting from the map into a board, also keep track of the score and add it to
     for(multimap<string,Tile>::iterator it=legalMoves.begin(); it!=legalMoves.end(); ++it){
@@ -218,7 +214,7 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         outBoard.tiles = board.tiles;
         Tile lastTile = outBoard.getTile(tile.coords.at(0),tile.coords.at(1));
         lastTile.letter = word[word.size()-1];
-
+        cout << "definitions complete, line 221,"<<tile.orient<<endl;
         if(tile.orient==1){
             int i=0;
             for(string::iterator str=(word.end()-1); str!=word.begin(); --str){
@@ -230,14 +226,17 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         }
         if(tile.orient==2){
             int i=0;
+            cout << "pre string iteration" << endl;
             for(string::iterator str=(word.end()-1); str!=word.begin(); --str){
                 Tile outTile = outBoard.getTile(tile.coords[0],tile.coords[1]-i);
                 outTile.letter = *str;
                 i++;
             }
+            cout << "post string iteration"<<endl;
         }
-
+        cout << "pre getscore"<<endl;
         outBoard.score = getScore(word,board,tile);
+        cout << "post getscore"<<endl;
         moves.push_back(outBoard);
     }
     

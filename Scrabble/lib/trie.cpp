@@ -68,19 +68,15 @@ struct Trie {
             str = str.substr(1, str.size()-1);
         }
         string next = str.substr(1,str.size()-1);
-        cout << next << endl;
         for(map<char, Trie*>::iterator it = children.begin(); it != children.end(); it++){
             if (it->first == tolower(str[0]) && str.size() == 1){
-                cout << "when i return the trie is off of " << str[0] << endl;
                 return *(it->second);
             }
             
             if (it->first == tolower(str[0])){
-                cout << str[0] << "," << endl;
                 return it->second->traverse(next);
             }
         }
-        cout << "exiting traverse"<<endl;
     }
 
     void getRackWords(const string& prefix, map<char, int>& rack, vector<string>& results){
