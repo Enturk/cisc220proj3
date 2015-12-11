@@ -58,13 +58,13 @@ Board boardGen() {
             vector<int> coords;
             coords.push_back(countX);
             coords.push_back(countY);
-            board.tiles.push_back(*(new Tile(*it, 0, weight(*it), coords)));
+            board.tiles.push_back(*(new Tile(*it, weight(*it), 0, coords)));
           }
           if(isdigit(*it)){
             vector<int> coords;
             coords.push_back(countX);
             coords.push_back(countY);
-            board.tiles.push_back(*(new Tile(0, *it, 0, coords)));
+            board.tiles.push_back(*(new Tile(0, 0, *it-48, coords)));
           }
           countX++;
         }

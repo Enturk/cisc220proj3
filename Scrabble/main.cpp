@@ -10,7 +10,7 @@ int main() {
     Board board = boardGen();
     vector<Tile> rack = rackGen();
     vector<Tile> anchors = getAnchors(board);
-    
+    cout << anchors[0].coords[0] << anchors[0].coords[1] << endl;
     for (int i = 0; i < anchors.size(); i++){ //to test getAnchors
       cout << anchors.at(i).coords.at(0) << "," << anchors.at(i).coords.at(1);
     }
@@ -28,6 +28,5 @@ int main() {
     vector<Board> answers;
     answers = movesGen(board, rack); //returns a vector of boards... we need to then display them.
     for (int i = 0; i < answers.size(); i++){
-        //cout << answers.at(i); //if riley's overloader works this will print all them out
     }
 }
