@@ -95,8 +95,8 @@ struct Board {
         else cout << "  012345678901234";
         cout << endl;
         for (int y = 0; y < 15; y++){
-            rank = y+1;
-            if (y>8) rank -= 10;
+            rank = y;
+            if (y>9) rank -= 10;
             cout << rank << " ";
             for (int x = 0; x < 15; x++){
                 temp = this->getTile(x, y);
