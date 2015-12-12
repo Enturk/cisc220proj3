@@ -168,6 +168,7 @@ void LeftPart(string partialWord, Trie n, int limit, vector<Tile> rack, Tile anc
 
 
 vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
+    cout <<"from findMoves: "<< anchor.orient <<endl;
     // This returns a vector of boards because we don't know how many moves a specific anchor might yeild.
     /* orphaned, in progress.
      * ARGS: anchor; a Tile that we want to compute moves from.
@@ -178,22 +179,10 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
      *
      *      it should generate the vector of Boards based off of the records of LegalMove.
      */
+    //Tile anchor = anc;
     vector<Board> moves;
+    //cout << anc->coords[0]<<"+"<<anc->coords[1]<<":"<<anc->orient<<endl;
     int temp;
-    if(anchor.orient==3){
-        temp = anchor.orient;
-        
-        anchor.orient=1;
-        vector<Board> horizMoves = findMoves(anchor, board, rack);
-        moves.insert(moves.end(),horizMoves.begin(),horizMoves.end());
-
-        anchor.orient=2;
-        vector<Board> vertMoves = findMoves(anchor, board, rack);
-        moves.insert(moves.end(),vertMoves.begin(),vertMoves.end());
-
-        anchor.orient = temp;
-        return moves;
-    }
     vector<Tile> row;
     if(anchor.orient==1){
         row = board.getRow(anchor.coords.at(1));
@@ -201,6 +190,7 @@ vector<Board> findMoves(Tile anchor, Board board, vector<Tile> rack){
         row = board.getCol(anchor.coords.at(0));
     }
     string partialWord = findPartial(anchor,row);
+    cout << 205 << endl;
     string str(partialWord);
     Trie n = root.traverse(str);
     cout << anchor.coords[0]<<anchor.coords[1]<<endl;
@@ -261,7 +251,7 @@ vector<Board> findBest(vector<Board> moves){ //GNOME SORT FTW
 }
 
 
-vector<Board> movesGen(Board board, vector<Tile> rack){
+vector<Board> movesGen(Board& board, vector<Tile> rack){
     //I believe this should call everything and return the best moves, which are instances of the board will a play on them
     //The trie is not global, I need to intialize it here.
     getTrie();
@@ -270,7 +260,8 @@ vector<Board> movesGen(Board board, vector<Tile> rack){
     vector<Board> allMoves;
     //cout <<"We will now test all of the anchors..."<<endl;
     for(int i=0;i<anchors.size();i++){
-        vector<Board> moves = findMoves(anchors[i],board, rack);
+        cout << "from movesGen():" << anchors.at(i).orient << endl;
+        vector<Board> moves = findMoves(anchors.at(i),board, rack);
         allMoves.insert(allMoves.end(),moves.begin(),moves.end());
     }
     allMoves = findBest(allMoves);

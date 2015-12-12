@@ -86,11 +86,10 @@ void crossCheck(Tile& tile, Board& board){
       delete[] y;
   }
   tile.xchecks = tile.xchecks & old;
-  if(tile.coords[0]==0&&tile.coords[1]==11)cout<<tile.xchecks<<endl;
 }
 
-vector<Tile> getAnchors(Board board){
-    //Sam-complete, needs testing
+vector<Tile> getAnchors(Board& board){
+    //Sam
     /* Args: board; a Board with tiles on it. Tiles should have a completed xchecks vector associated w/ them.
      * RETURNS: vector<Tile> a list of all of the tiles that are anchors.
      * anchors are defined as the leftmost empty tiles adjacent to already placed tiles with non-trivial xchecks.
@@ -118,6 +117,7 @@ vector<Tile> getAnchors(Board board){
             }
             else if (col.at(j).letter == 0 && isalpha(col.at(j+1).letter)){
                 board.getTile(i,j).orient = 2; //vertically
+                if(i==0&&j==11)cout << "ZERO ELEVEN"<<board.getTile(i,j).orient<<endl;
                 anchors.push_back(board.getTile(i,j));
             }
             
@@ -168,14 +168,14 @@ vector<Tile> getAnchors(Board board){
     for (int i = 0; i<finalAnchs.size(); i++){
         finalAnchs.at(i).anchor = true;
     }
-    //cout << "anchors size: " << finalAnchs.size() << endl;
+    cout << "anchor 0,11 orient: " << finalAnchs[0].orient << endl;
     return finalAnchs;
 }
 
 
 
 int findLimit(Tile anchor, vector<Tile> row){
-    //Sam--complete, needs testing
+    //Sam
     /* args: Tile anchor, the anchor we want to find the left limit of.
      *       Board board, the board to analyze
      * returns: the number of non-anchor tiles to the left of anchor.
